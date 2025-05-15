@@ -9,6 +9,7 @@ const PlayerDetails = () => {
   const navigate = useNavigate();
   const [player, setPlayer] = useState(location.state?.player);
   const [scoutRankings, setScoutRankings] = useState(null);
+  const [consensusRank, setConsensusRank] = useState(null);
   const [measurements, setMeasurements] = useState(null);
   const [userReports, setUserReports] = useState([]);
   const [scoutName, setScoutName] = useState('');
@@ -30,12 +31,28 @@ const PlayerDetails = () => {
       const rankings = playerData.scoutRankings?.find(r => r.playerId === playerId);
       setScoutRankings(rankings);
       
+      // Calculate consensus rank
+      if (rankings) {
+        const validRanks = [
+          rankings["ESPN Rank"],
+          rankings["Sam Vecenie Rank"],
+          rankings["Kevin O'Connor Rank"],
+          rankings["Kyle Boone Rank"],
+          rankings["Gary Parrish Rank"]
+        ].filter(rank => rank !== null);
+        
+        if (validRanks.length > 0) {
+          const consensus = Math.round(validRanks.reduce((a, b) => a + b, 0) / validRanks.length);
+          setConsensusRank(consensus);
+        }
+      }
+      
       // Get measurements
       const playerMeasurements = playerData.measurements?.find(m => m.playerId === playerId);
       setMeasurements(playerMeasurements);
     }
   }, [player, id]);
-  
+
   const handleReportSubmit = (e) => {
     e.preventDefault();
     
@@ -72,6 +89,19 @@ const PlayerDetails = () => {
     return `${feet}'${remainingInches}"`;
   };
   
+  // Helper function to render comparison indicators
+  const renderRankComparison = (rank) => {
+    if (rank === null || consensusRank === null) return null;
+    
+    // Lower rank number is better (higher ranking)
+    if (rank < consensusRank) {
+      return <span className="rank-higher">Higher than consensus ▲</span>;
+    } else if (rank > consensusRank) {
+      return <span className="rank-lower">Lower than consensus ▼</span>;
+    }
+    return null;
+  };
+  
   return (
     <div className="player-details">
       <button className="back-button" onClick={() => navigate('/big-board')}>
@@ -82,15 +112,9 @@ const PlayerDetails = () => {
         <div className="player-header">
           <div className="player-title">
             <h1>{player.name}</h1>
-            {scoutRankings && (
+            {consensusRank && (
               <div className="scout-consensus">
-                <span>Consensus Rank: {Math.round((
-                  scoutRankings["ESPN Rank"] +
-                  scoutRankings["Sam Vecenie Rank"] +
-                  scoutRankings["Kevin O'Connor Rank"] +
-                  scoutRankings["Kyle Boone Rank"] +
-                  scoutRankings["Gary Parrish Rank"]
-                ) / 5)}</span>
+                <span>Consensus Rank: {consensusRank}</span>
               </div>
             )}
           </div>
@@ -119,11 +143,35 @@ const PlayerDetails = () => {
             {scoutRankings && (
               <div className="rankings-section">
                 <h3>Scout Rankings</h3>
-                <p><strong>ESPN:</strong> #{scoutRankings["ESPN Rank"]}</p>
-                <p><strong>Sam Vecenie:</strong> #{scoutRankings["Sam Vecenie Rank"]}</p>
-                <p><strong>Kevin O'Connor:</strong> #{scoutRankings["Kevin O'Connor Rank"]}</p>
-                <p><strong>Kyle Boone:</strong> #{scoutRankings["Kyle Boone Rank"]}</p>
-                <p><strong>Gary Parrish:</strong> #{scoutRankings["Gary Parrish Rank"]}</p>
+                <p>
+                  <strong>ESPN:</strong> {scoutRankings["ESPN Rank"] !== null 
+                    ? <>#{scoutRankings["ESPN Rank"]} {renderRankComparison(scoutRankings["ESPN Rank"])}</>
+                    : <span className="not-ranked">Not Ranked</span>}
+                </p>
+                
+                <p>
+                  <strong>Sam Vecenie:</strong> {scoutRankings["Sam Vecenie Rank"] !== null 
+                    ? <>#{scoutRankings["Sam Vecenie Rank"]} {renderRankComparison(scoutRankings["Sam Vecenie Rank"])}</>
+                    : <span className="not-ranked">Not Ranked</span>}
+                </p>
+                
+                <p>
+                  <strong>Kevin O'Connor:</strong> {scoutRankings["Kevin O'Connor Rank"] !== null 
+                    ? <>#{scoutRankings["Kevin O'Connor Rank"]} {renderRankComparison(scoutRankings["Kevin O'Connor Rank"])}</>
+                    : <span className="not-ranked">Not Ranked</span>}
+                </p>
+                
+                <p>
+                  <strong>Kyle Boone:</strong> {scoutRankings["Kyle Boone Rank"] !== null 
+                    ? <>#{scoutRankings["Kyle Boone Rank"]} {renderRankComparison(scoutRankings["Kyle Boone Rank"])}</>
+                    : <span className="not-ranked">Not Ranked</span>}
+                </p>
+                
+                <p>
+                  <strong>Gary Parrish:</strong> {scoutRankings["Gary Parrish Rank"] !== null 
+                    ? <>#{scoutRankings["Gary Parrish Rank"]} {renderRankComparison(scoutRankings["Gary Parrish Rank"])}</>
+                    : <span className="not-ranked">Not Ranked</span>}
+                </p>
               </div>
             )}
             
@@ -219,4 +267,4 @@ const PlayerDetails = () => {
   );
 };
 
-export default PlayerDetails; 
+export default PlayerDetails;

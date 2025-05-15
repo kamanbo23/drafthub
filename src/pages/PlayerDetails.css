@@ -294,3 +294,26 @@ li {
   text-align: center;
   margin: 4rem 0;
 } 
+
+.not-ranked {
+  color: #777;
+  font-style: italic;
+}
+
+.rank-higher, .rank-lower {
+  display: inline-block;
+  margin-left: 10px;
+  font-size: 0.85rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.rank-higher {
+  color: #1d8348; /* Dark green */
+  background-color: #e8f8f5; /* Light green background */
+}
+
+.rank-lower {
+  color: #922b21; /* Dark red */
+  background-color: #fdedec; /* Light red background */
+}
