@@ -43,4 +43,52 @@
 
 .player-details strong {
   color: #444;
+}
+
+.player-details button {
+  background-color: #0053a0; /* Mavericks blue */
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  margin-top: 0.75rem;
+  cursor: pointer;
+  width: 100%;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.player-details button:hover {
+  background-color: #00285e; /* Darker blue */
 } 
+
+.card-scouting-reports {
+  margin-top: 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #eee;
+}
+
+.card-scouting-reports h4 {
+  margin: 0 0 0.5rem 0;
+  color: #0053a0;
+  font-size: 0.95rem;
+}
+
+.card-report {
+  background-color: #f8f8f8;
+  border-radius: 4px;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.card-report p {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+/* Adjust the player-card to be taller */
+.player-card {
+  height: auto;
+  min-height: 420px;
+}

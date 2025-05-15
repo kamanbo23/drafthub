@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import BigBoard from './pages/BigBoard';
 import DataViz from './pages/DataViz';
+import PlayerDetails from './pages/PlayerDetails';
 import './App.css';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/big-board" element={<BigBoard />} />
             <Route path="/data-viz" element={<DataViz />} />
+            <Route path="/player/:id" element={<PlayerDetails />} />
           </Routes>
         </div>
       </div>
