@@ -87,6 +87,16 @@
   line-height: 1.4;
 }
 
+.no-reports-message {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background-color: #f8f8f8;
+  border-radius: 4px;
+  font-style: italic;
+  color: #777;
+  border-top: 1px solid #eee;
+}
+
 /* Adjust the player-card to be taller */
 .player-card {
   height: auto;

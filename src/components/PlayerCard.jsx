@@ -48,7 +48,7 @@ const PlayerCard = ({ player }) => {
           <p><strong>Player ID:</strong> {player.playerId}</p>
           <p><strong>Report Count:</strong> {scoutingReports.length}</p>
           
-          {scoutingReports.length > 0 && (
+          {scoutingReports.length > 0 ? (
             <div className="card-scouting-reports">
               <h4>Scouting Reports:</h4>
               {scoutingReports.map((report, index) => (
@@ -57,9 +57,13 @@ const PlayerCard = ({ player }) => {
                 </div>
               ))}
             </div>
+          ) : (
+            <div className="no-reports-message">
+              <p>No scouting reports available for this player but you can add your own reports within the player details page after clicking the button below.</p>
+            </div>
           )}
 
-          <button onClick={handleViewDetails}>View Details and Scouting Reports</button>
+          <button onClick={handleViewDetails}>View Player Details</button>
         </div>
       </div>
     </div>

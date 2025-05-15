@@ -1,9 +1,9 @@
 import React from 'react';
-
 function Home() {
   return (
     <div className="home">
       <div className="welcome-section">
+        <img src={"/Mavericks-logo.png"} alt="Mavericks Logo" className="logo" />
         <h2>Welcome to the Mavericks Draft Hub</h2>
         <p>Your  tool for evaluating NBA Draft prospects</p>
       </div>

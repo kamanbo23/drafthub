@@ -10,8 +10,9 @@ const PlayerDetails = () => {
   const [player, setPlayer] = useState(location.state?.player);
   const [scoutRankings, setScoutRankings] = useState(null);
   const [measurements, setMeasurements] = useState(null);
-  const [stats, setStats] = useState([]);
-  const [scoutingReports, setScoutingReports] = useState([]);
+  const [userReports, setUserReports] = useState([]);
+  const [scoutName, setScoutName] = useState('');
+  const [reportContent, setReportContent] = useState('');
   
   useEffect(() => {
     // If player wasn't passed through state, try to find by ID
@@ -32,16 +33,27 @@ const PlayerDetails = () => {
       // Get measurements
       const playerMeasurements = playerData.measurements?.find(m => m.playerId === playerId);
       setMeasurements(playerMeasurements);
-      
-      // Get game logs (can be multiple entries)
-      const playerStats = playerData.game_logs ? playerData.game_logs.filter(s => s.playerId === playerId) : [];
-      setStats(playerStats);
-      
-      // Get scouting reports
-      const reports = playerData.scoutingReports ? playerData.scoutingReports.filter(r => r.playerId === playerId) : [];
-      setScoutingReports(reports);
     }
   }, [player, id]);
+  
+  const handleReportSubmit = (e) => {
+    e.preventDefault();
+    
+    if (scoutName.trim() === '' || reportContent.trim() === '') {
+      alert('Please fill out both the scout name and report fields');
+      return;
+    }
+    
+    const newReport = {
+      scout: scoutName,
+      report: reportContent,
+      date: new Date().toLocaleDateString()
+    };
+    
+    setUserReports([newReport, ...userReports]);
+    setScoutName('');
+    setReportContent('');
+  };
   
   if (!player) {
     return (
@@ -58,65 +70,6 @@ const PlayerDetails = () => {
     const feet = Math.floor(inches / 12);
     const remainingInches = inches % 12;
     return `${feet}'${remainingInches}"`;
-  };
-  
-  // Generate player strengths and weaknesses based on their stats
-  const generateStrengths = () => {
-    if (!stats.length) return ["No data available"];
-    
-    const strengths = [];
-    const recentStats = stats[0]; // Use most recent stats
-    
-    if (recentStats) {
-      if (recentStats["3P%"] > 36) {
-        strengths.push("Excellent three-point shooter");
-      }
-      if (recentStats.AST > 4) {
-        strengths.push("Strong playmaker");
-      }
-      if (recentStats.TRB > 7) {
-        strengths.push("Elite rebounder");
-      }
-      if (recentStats.STL > 1.5) {
-        strengths.push("Disruptive defender");
-      }
-      if (recentStats.BLK > 1) {
-        strengths.push("Good shot blocker");
-      }
-      if (recentStats["FG%"] > 50) {
-        strengths.push("Efficient scorer");
-      }
-    }
-    
-    if (measurements && measurements.wingspan > measurements.heightShoes + 3) {
-      strengths.push("Excellent length");
-    }
-    
-    return strengths.length ? strengths : ["Not enough data to determine strengths"];
-  };
-  
-  const generateWeaknesses = () => {
-    if (!stats.length) return ["No data available"];
-    
-    const weaknesses = [];
-    const recentStats = stats[0]; // Use most recent stats
-    
-    if (recentStats) {
-      if (recentStats["3P%"] < 33 && recentStats["3PA"] > 2) {
-        weaknesses.push("Inconsistent three-point shooter");
-      }
-      if (recentStats.TOV > 3) {
-        weaknesses.push("Turnover prone");
-      }
-      if (recentStats["FTP"] < 70) {
-        weaknesses.push("Poor free throw shooter");
-      }
-      if (recentStats.PF > 3) {
-        weaknesses.push("Foul trouble concerns");
-      }
-    }
-    
-    return weaknesses.length ? weaknesses : ["Not enough data to determine weaknesses"];
   };
   
   return (
@@ -186,87 +139,81 @@ const PlayerDetails = () => {
             )}
           </div>
           
-          <div className="scouting-report">
-            <h2>Scouting Report</h2>
+          <div className="player-analysis">
+            <h2>Player Analysis</h2>
             
-            {scoutingReports.length > 0 ? (
-              <div className="reports">
-                {scoutingReports.map((report, index) => (
+            <div className="player-summary">
+              <p>
+                {player.name} is a {formatHeight(player.height)} {player.position || 'player'} currently with {player.currentTeam} in the {player.league}.
+                {measurements && measurements.wingspan > measurements.heightNoShoes + 2 && ' He has excellent length for his position.'}
+                {measurements && measurements.maxVertical > 35 && ' His vertical leap shows elite athleticism.'}
+              </p>
+            </div>
+            
+            <div className="data-viz-section">
+              <button 
+                className="data-viz-button"
+                onClick={() => navigate('/data-viz', { state: { player } })}
+              >
+                View Data Visualization
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        {/* User Scouting Reports Section */}
+        <div className="reports-section">
+          <h2>Scouting Reports</h2>
+          
+          <div className="user-reports">
+            {userReports.length > 0 ? (
+              <div className="reports-list">
+                {userReports.map((report, index) => (
                   <div key={index} className="report">
-                    <h3>Report by {report.scout}</h3>
+                    <div className="report-header">
+                      <h3>{report.scout}</h3>
+                      <span className="report-date">{report.date}</span>
+                    </div>
                     <p>{report.report}</p>
                   </div>
                 ))}
               </div>
             ) : (
-              <p>No official scouting reports available for {player.name}.</p>
+              <p className="no-reports">No scouting reports available for this player. Add the first one below!</p>
             )}
-            
-            <div className="strengths">
-              <h3>Strengths</h3>
-              <ul>
-                {generateStrengths().map((strength, index) => (
-                  <li key={index}>{strength}</li>
-                ))}
-              </ul>
-            </div>
-            
-            <div className="weaknesses">
-              <h3>Weaknesses</h3>
-              <ul>
-                {generateWeaknesses().map((weakness, index) => (
-                  <li key={index}>{weakness}</li>
-                ))}
-              </ul>
-            </div>
+          </div>
+          
+          <div className="add-report">
+            <h3>Add Your Scouting Report</h3>
+            <form onSubmit={handleReportSubmit} className="report-form">
+              <div className="form-field">
+                <label htmlFor="scout-name">Scout Name:</label>
+                <input 
+                  type="text" 
+                  id="scout-name" 
+                  value={scoutName}
+                  onChange={(e) => setScoutName(e.target.value)}
+                  placeholder="Your name"
+                  required
+                />
+              </div>
+              
+              <div className="form-field">
+                <label htmlFor="report">Scouting Report:</label>
+                <textarea 
+                  id="report" 
+                  value={reportContent}
+                  onChange={(e) => setReportContent(e.target.value)}
+                  placeholder="Share your analysis of this player..."
+                  rows="4" 
+                  required
+                ></textarea>
+              </div>
+              
+              <button type="submit" className="submit-report">Submit Report</button>
+            </form>
           </div>
         </div>
-        
-        {stats.length > 0 && (
-          <div className="stats-section">
-            <h2>Recent Statistics</h2>
-            <div className="stats-table-container">
-              <table className="stats-table">
-                <thead>
-                  <tr>
-                    <th>Season</th>
-                    <th>League</th>
-                    <th>Team</th>
-                    <th>GP</th>
-                    <th>MIN</th>
-                    <th>PTS</th>
-                    <th>REB</th>
-                    <th>AST</th>
-                    <th>STL</th>
-                    <th>BLK</th>
-                    <th>FG%</th>
-                    <th>3P%</th>
-                    <th>FT%</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {stats.map((stat, index) => (
-                    <tr key={index}>
-                      <td>{stat.Season}</td>
-                      <td>{stat.League}</td>
-                      <td>{stat.Team}</td>
-                      <td>{stat.GP}</td>
-                      <td>{stat.MP}</td>
-                      <td>{stat.PTS}</td>
-                      <td>{stat.TRB}</td>
-                      <td>{stat.AST}</td>
-                      <td>{stat.STL}</td>
-                      <td>{stat.BLK}</td>
-                      <td>{stat["FG%"]}</td>
-                      <td>{stat["3P%"]}</td>
-                      <td>{stat["FTP"]}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
