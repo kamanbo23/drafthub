@@ -1,4 +1,4 @@
-name: NodeJS with Webpack
+name: NodeJS with Vite
 
 on:
   push:
@@ -24,7 +24,6 @@ jobs:
 
     - name: Build
       run: |
-        cd nbadraftfrontofficeapplication
-        cd nbadraftfrontoffice        
+        cd nbadraftfrontoffice
         npm ci
         npm run build
