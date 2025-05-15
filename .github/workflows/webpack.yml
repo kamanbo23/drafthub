@@ -24,6 +24,7 @@ jobs:
 
     - name: Build
       run: |
-        cd nbadraftfrontoffice
+        cd nbadraftfrontofficeapplication
+        cd nbadraftfrontoffice        
         npm ci
         npm run build
