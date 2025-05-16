@@ -11,6 +11,7 @@ const PlayerDetails = () => {
   const [scoutRankings, setScoutRankings] = useState(null);
   const [consensusRank, setConsensusRank] = useState(null);
   const [measurements, setMeasurements] = useState(null);
+  const [scoutingReports, setScoutingReports] = useState([]);
   const [userReports, setUserReports] = useState([]);
   const [scoutName, setScoutName] = useState('');
   const [reportContent, setReportContent] = useState('');
@@ -50,6 +51,10 @@ const PlayerDetails = () => {
       // Get measurements
       const playerMeasurements = playerData.measurements?.find(m => m.playerId === playerId);
       setMeasurements(playerMeasurements);
+
+      // Get scouting reports
+      const reports = playerData.scoutingReports?.filter(r => r.playerId === playerId) || [];
+      setScoutingReports(reports);
     }
   }, [player, id]);
 
@@ -209,14 +214,14 @@ const PlayerDetails = () => {
           </div>
         </div>
         
-        {/* User Scouting Reports Section */}
+        {/* Scouting Reports Section */}
         <div className="reports-section">
           <h2>Scouting Reports</h2>
           
           <div className="user-reports">
-            {userReports.length > 0 ? (
+            {scoutingReports.length > 0 ? (
               <div className="reports-list">
-                {userReports.map((report, index) => (
+                {scoutingReports.map((report, index) => (
                   <div key={index} className="report">
                     <div className="report-header">
                       <h3>{report.scout}</h3>
@@ -252,13 +257,12 @@ const PlayerDetails = () => {
                   id="report" 
                   value={reportContent}
                   onChange={(e) => setReportContent(e.target.value)}
-                  placeholder="Share your analysis of this player..."
-                  rows="4" 
+                  placeholder="Write your scouting report here..."
                   required
-                ></textarea>
+                />
               </div>
               
-              <button type="submit" className="submit-report">Submit Report</button>
+              <button type="submit">Submit Report</button>
             </form>
           </div>
         </div>

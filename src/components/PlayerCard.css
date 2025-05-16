@@ -15,7 +15,7 @@
 
 .player-image {
   width: 100%;
-  height: 200px;
+  height: 250px;
   overflow: hidden;
   border-radius: 4px;
   margin-bottom: 1rem;
@@ -97,8 +97,7 @@
   border-top: 1px solid #eee;
 }
 
-/* Adjust the player-card to be taller */
 .player-card {
   height: auto;
-  min-height: 420px;
+  min-height: 500px;
 }
