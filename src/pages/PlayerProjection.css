@@ -1,23 +1,26 @@
+/* main container */
 .player-projection {
-  padding: 2rem;
+  padding: 30px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
+/* page title */
 .player-projection h1 {
-  color: #1d428a;
-  margin-bottom: 1.5rem;
+  color: #1d428a; /* mavs blue */
+  margin-bottom: 25px;
   text-align: center;
 }
 
+/* back button */
 .back-button {
   background-color: #1d428a;
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
+  padding: 8px 16px;
   border-radius: 4px;
   cursor: pointer;
-  margin-bottom: 1rem;
+  margin-bottom: 15px;
   font-weight: 600;
 }
 
@@ -25,57 +28,61 @@
   background-color: #00538c;
 }
 
+/* 2-column layout */
 .projection-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2rem;
+  gap: 30px;
 }
 
+/* stack on mobile */
 @media (max-width: 900px) {
   .projection-container {
     grid-template-columns: 1fr;
   }
 }
 
+/* form styles */
 .projection-form {
   background-color: #f8f9fa;
-  padding: 1.5rem;
+  padding: 25px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .form-group {
-  margin-bottom: 1.2rem;
+  margin-bottom: 20px;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 8px;
   font-weight: 600;
   color: #333;
 }
 
 .form-group select {
   width: 100%;
-  padding: 0.5rem;
+  padding: 8px;
   border: 1px solid #ced4da;
   border-radius: 4px;
-  font-size: 1rem;
+  font-size: 16px;
 }
 
+/* player info card */
 .player-summary {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem;
+  padding: 15px;
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  margin-bottom: 1.5rem;
+  margin-bottom: 25px;
 }
 
 .player-info h3 {
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 8px 0;
   color: #1d428a;
 }
 
@@ -92,10 +99,11 @@
   border: 2px solid #1d428a;
 }
 
+/* checkboxes for focus areas */
 .focus-areas {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 0.5rem;
+  gap: 10px;
 }
 
 .focus-area-option {
@@ -104,21 +112,22 @@
 }
 
 .focus-area-option input[type="checkbox"] {
-  margin-right: 0.5rem;
+  margin-right: 8px;
 }
 
+/* generate button - make bigger than normal buttons */
 .generate-button {
   background-color: #00538c;
   color: white;
   border: none;
-  padding: 0.8rem;
+  padding: 12px;
   border-radius: 4px;
   width: 100%;
-  font-size: 1rem;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s;
-  margin-top: 1rem;
+  margin-top: 15px;
 }
 
 .generate-button:hover {
@@ -130,28 +139,29 @@
   cursor: not-allowed;
 }
 
+/* error messages */
 .error-message {
-  color: #dc3545;
-  margin-top: 1rem;
-  padding: 0.5rem;
+  color: #dc3545; /* bootstrap red */
+  margin-top: 15px;
+  padding: 8px;
   background-color: #f8d7da;
   border-radius: 4px;
   text-align: center;
 }
 
 .error-section {
-  margin-top: 1rem;
+  margin-top: 15px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .retry-button {
-  margin-top: 1rem;
+  margin-top: 15px;
   background-color: #28a745;
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
+  padding: 8px 16px;
   border-radius: 4px;
   font-weight: 600;
   cursor: pointer;
@@ -162,9 +172,10 @@
   background-color: #218838;
 }
 
+/* results display */
 .projection-results {
   background-color: #fff;
-  padding: 1.5rem;
+  padding: 25px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -172,7 +183,7 @@
 .projection-results h2 {
   color: #1d428a;
   border-bottom: 2px solid #1d428a;
-  padding-bottom: 0.5rem;
+  padding-bottom: 8px;
   margin-top: 0;
 }
 
@@ -184,16 +195,16 @@
 .projection-content h3, 
 .projection-content h4 {
   color: #1d428a;
-  margin-top: 1.5rem;
-  margin-bottom: 0.5rem;
+  margin-top: 25px;
+  margin-bottom: 10px;
 }
 
 .projection-content p {
-  margin-bottom: 1rem;
+  margin-bottom: 15px;
 }
 
 .projection-content li {
-  margin-bottom: 0.5rem;
+  margin-bottom: 8px;
 }
 
 /* Loading animation */

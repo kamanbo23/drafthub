@@ -8,7 +8,6 @@ import PlayerDetails from './pages/PlayerDetails';
 import PlayerProjection from './pages/PlayerProjection';
 import './App.css';
 
-// handles routing
 function App() {
   return (
     <Router>

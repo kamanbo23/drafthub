@@ -1,24 +1,29 @@
+/* card container */
 .player-card {
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 1rem;
-  margin: 1rem;
+  padding: 15px;
+  margin: 15px;
   width: 300px;
   transition: transform 0.2s ease;
+  height: auto;
+  min-height: 500px; /* keep cards consistent height */
 }
 
+/* hover effect */
 .player-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
+/* player photo */
 .player-image {
   width: 100%;
   height: 250px;
   overflow: hidden;
   border-radius: 4px;
-  margin-bottom: 1rem;
+  margin-bottom: 15px;
 }
 
 .player-image img {
@@ -27,17 +32,19 @@
   object-fit: cover;
 }
 
+/* player name */
 .player-info h3 {
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 8px 0;
   color: #333;
 }
 
+/* player details list */
 .player-details {
-  font-size: 0.9rem;
+  font-size: 14px;
 }
 
 .player-details p {
-  margin: 0.25rem 0;
+  margin: 4px 0;
   color: #666;
 }
 
@@ -45,13 +52,14 @@
   color: #444;
 }
 
+/* view details button - make bigger later */
 .player-details button {
-  background-color: #0053a0; /* Mavericks blue */
+  background-color: #0053a0; /* mavs blue */
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
+  padding: 8px 16px;
   border-radius: 4px;
-  margin-top: 0.75rem;
+  margin-top: 12px;
   cursor: pointer;
   width: 100%;
   font-weight: 500;
@@ -59,45 +67,42 @@
 }
 
 .player-details button:hover {
-  background-color: #00285e; /* Darker blue */
+  background-color: #00285e; /* darker blue */
 } 
 
+/* scouting reports section */
 .card-scouting-reports {
-  margin-top: 1rem;
-  padding-top: 0.5rem;
+  margin-top: 16px;
+  padding-top: 8px;
   border-top: 1px solid #eee;
 }
 
 .card-scouting-reports h4 {
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 8px 0;
   color: #0053a0;
-  font-size: 0.95rem;
+  font-size: 15px;
 }
 
 .card-report {
   background-color: #f8f8f8;
   border-radius: 4px;
-  padding: 0.5rem;
-  margin-bottom: 0.5rem;
+  padding: 8px;
+  margin-bottom: 8px;
 }
 
 .card-report p {
   margin: 0;
-  font-size: 0.8rem;
+  font-size: 13px;
   line-height: 1.4;
 }
 
+/* no reports message */
 .no-reports-message {
-  margin-top: 1rem;
-  padding: 0.5rem;
+  margin-top: 16px;
+  padding: 8px;
   background-color: #f8f8f8;
   border-radius: 4px;
   font-style: italic;
   color: #777;
   border-top: 1px solid #eee;
-}
-
-.player-card {
-  height: auto;
-  min-height: 500px;
 }

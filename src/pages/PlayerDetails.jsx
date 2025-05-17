@@ -315,10 +315,21 @@ const PlayerDetails = () => {
           <h2>Scouting Reports</h2>
           
           <div className="user-reports">
-            {scoutingReports.length > 0 ? (
+            {scoutingReports.length > 0 || userReports.length > 0 ? (
               <div className="reports-list">
+                {/* Show user submitted reports first */}
+                {userReports.map((report, index) => (
+                  <div key={`user-${index}`} className="report user-submitted-report">
+                    <div className="report-header">
+                      <h3>{report.scout} <span className="your-report">(Your Report)</span></h3>
+                      <span className="report-date">{report.date}</span>
+                    </div>
+                    <p>{report.report}</p>
+                  </div>
+                ))}
+                
                 {scoutingReports.map((report, index) => (
-                  <div key={index} className="report">
+                  <div key={`scout-${index}`} className="report">
                     <div className="report-header">
                       <h3>{report.scout}</h3>
                       <span className="report-date">{report.date}</span>
