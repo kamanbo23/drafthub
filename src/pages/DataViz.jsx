@@ -5,7 +5,17 @@ import { Typography, Container, Paper } from '@mui/material';
 function DataViz() {
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
-      <Typography variant="h4" component="h1" align="center" color="primary" sx={{ mb: 4 }}>
+      <Typography
+        variant="h3"
+        component="h1"
+        align="center"
+        color="primary"
+        sx={{
+          mb: 4,
+          fontWeight: 'bold', // Make text bold
+          textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)', // Add subtle shadow
+        }}
+      >
         Data Visualization
       </Typography>
       <Paper elevation={2} sx={{ p: 4, borderRadius: 2 }}>

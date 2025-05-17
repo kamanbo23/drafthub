@@ -173,8 +173,7 @@ Focus areas for development: ${focusAreas.length > 0 ? focusAreas.map(area => {
 
 Mavericks context:
 - Head Coach: Jason Kidd
-- Core Players: Kyrie Irving, P.J. Washington, Dereck Lively II
-- Team Needs: Outside shooting, secondary playmaking, rim protection
+- Core Players: Kyrie Irving, Athony Davis,P.J. Washington, Dereck Lively II
 
 Please provide a professional, concise evaluation with clear section headings. Format the response with proper markdown for headings.`;
       
@@ -270,8 +269,18 @@ Please provide a professional, concise evaluation with clear section headings. F
         Back
       </Button>
       
-      <Typography variant="h4" component="h1" align="center" color="primary" sx={{ mb: 3 }}>
-        Mavericks Player Projection
+      <Typography
+        variant="h3"
+        component="h1"
+        align="center"
+        color="primary"
+        sx={{
+          mb: 4,
+          fontWeight: 'bold', // Make text bold
+          textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)',
+        }}
+      >
+        Player Projection AI
       </Typography>
       
       <Box sx={{ 
