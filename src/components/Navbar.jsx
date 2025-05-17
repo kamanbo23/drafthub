@@ -12,6 +12,7 @@ function Navbar() {
         <Link to="/" className="nav-link">Home</Link>
         <Link to="/big-board" className="nav-link">Big Board</Link>
         <Link to="/data-viz" className="nav-link">Data Viz</Link>
+        <Link to="/projection" className="nav-link">Player Projections</Link>
       </div>
     </nav>
   );

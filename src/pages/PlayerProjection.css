@@ -1,0 +1,215 @@
+.player-projection {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.player-projection h1 {
+  color: #1d428a;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.back-button {
+  background-color: #1d428a;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.back-button:hover {
+  background-color: #00538c;
+}
+
+.projection-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+@media (max-width: 900px) {
+  .projection-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.projection-form {
+  background-color: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-bottom: 1.2rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.form-group select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.player-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.player-info h3 {
+  margin: 0 0 0.5rem 0;
+  color: #1d428a;
+}
+
+.player-info p {
+  margin: 0;
+  color: #666;
+}
+
+.player-photo img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #1d428a;
+}
+
+.focus-areas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.5rem;
+}
+
+.focus-area-option {
+  display: flex;
+  align-items: center;
+}
+
+.focus-area-option input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+
+.generate-button {
+  background-color: #00538c;
+  color: white;
+  border: none;
+  padding: 0.8rem;
+  border-radius: 4px;
+  width: 100%;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 1rem;
+}
+
+.generate-button:hover {
+  background-color: #003b65;
+}
+
+.generate-button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: #dc3545;
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background-color: #f8d7da;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.error-section {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.retry-button {
+  margin-top: 1rem;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.retry-button:hover {
+  background-color: #218838;
+}
+
+.projection-results {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.projection-results h2 {
+  color: #1d428a;
+  border-bottom: 2px solid #1d428a;
+  padding-bottom: 0.5rem;
+  margin-top: 0;
+}
+
+.projection-content {
+  line-height: 1.6;
+}
+
+.projection-content h2, 
+.projection-content h3, 
+.projection-content h4 {
+  color: #1d428a;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.projection-content p {
+  margin-bottom: 1rem;
+}
+
+.projection-content li {
+  margin-bottom: 0.5rem;
+}
+
+/* Loading animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading:before {
+  content: "";
+  display: block;
+  width: 20px;
+  height: 20px;
+  margin: 0 auto;
+  border-radius: 50%;
+  border: 3px solid #ccc;
+  border-top-color: #1d428a;
+  animation: spin 1s infinite linear;
+} 
