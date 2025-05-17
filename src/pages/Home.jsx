@@ -34,7 +34,7 @@ function Home() {
           Welcome to the Mavericks Draft Hub
         </Typography>
         <Typography variant="subtitle1" color="text.secondary">
-          Your tool for evaluating NBA Draft prospects
+          A companion for evaluating NBA Draft prospects
         </Typography>
       </Paper>
       

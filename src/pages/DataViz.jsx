@@ -1,8 +1,23 @@
 import React from 'react';
-import { Typography, Container, Paper } from '@mui/material';
+import { Typography, Container, Paper, Box } from '@mui/material';
+import ScatterPlotChart from '../components/ScatterPlotChart';
+import playerData from '../intern_project_data.json';
 
-// todo:add actual charts, maybe use recharts or d3.js
+// Basic data visualization with a scatter plot
 function DataViz() {
+  // Sample data for initial testing
+  const sampleData = playerData.measurements.slice(0, 15).map(measurement => {
+    const player = playerData.bio.find(p => p.playerId === measurement.playerId);
+    return {
+      name: player ? player.name : 'Unknown',
+      playerId: measurement.playerId,
+      wingspan: measurement.wingspan,
+      heightNoShoes: measurement.heightNoShoes,
+      maxVertical: measurement.maxVertical,
+      weight: measurement.weight
+    };
+  });
+
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
       <Typography
@@ -18,10 +33,21 @@ function DataViz() {
       >
         Data Visualization
       </Typography>
+      
+      {/* Basic scatter plot */}
       <Paper elevation={2} sx={{ p: 4, borderRadius: 2 }}>
-        <Typography variant="body1">
-          Coming soon: Interactive charts and analytics for draft prospects
+        <Typography variant="h5" sx={{ mb: 3 }}>
+          Wingspan vs Height
         </Typography>
+        <Box sx={{ height: 450 }}>
+          <ScatterPlotChart
+            data={sampleData}
+            xKey="heightNoShoes"
+            yKey="wingspan"
+            xLabel="Height (no shoes)"
+            yLabel="Wingspan"
+          />
+        </Box>
       </Paper>
     </Container>
   );
