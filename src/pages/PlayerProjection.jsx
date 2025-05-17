@@ -1,10 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import playerData from '../intern_project_data.json';
-import './PlayerProjection.css';
 
-// TODO: move to .env later
-const API_KEY = import.meta.env.OPENROUTERKEY;
+// MUI Components
+import { 
+  FormControl, 
+  InputLabel, 
+  Select, 
+  MenuItem, 
+  Button, 
+  FormGroup, 
+  FormControlLabel, 
+  Checkbox, 
+  Typography, 
+  Box, 
+  Card, 
+  CardContent, 
+  CircularProgress, 
+  Alert 
+} from '@mui/material';
+
+// move to .env later
+const API_KEY = import.meta.env.VITE_OPENROUTERKEY;
 
 // might need to add more later
 const FOCUS_AREAS = [
@@ -206,12 +223,10 @@ Please provide a professional, concise evaluation with clear section headings. F
     }
   };
   
-  // Format the markdown report into React components
   const formatReport = (content) => {
     if (!content) return null;
     
     return content.split('\n').map((paragraph, index) => {
-      // Handle headers
       if (/^#{1,3}\s/.test(paragraph)) {
         const level = paragraph.match(/^(#{1,3})\s/)[1].length;
         const text = paragraph.replace(/^#{1,3}\s/, '');
@@ -245,121 +260,166 @@ Please provide a professional, concise evaluation with clear section headings. F
   };
   
   return (
-    <div className="player-projection">
-      <button className="back-button" onClick={() => navigate(-1)}>
+    <Box sx={{ maxWidth: '1200px', margin: '0 auto', padding: '30px' }}>
+      <Button 
+        variant="contained" 
+        color="primary" 
+        onClick={() => navigate(-1)}
+        sx={{ mb: 2 }}
+      >
         Back
-      </button>
+      </Button>
       
-      <h1>Mavericks Player Projection</h1>
+      <Typography variant="h4" component="h1" align="center" color="primary" sx={{ mb: 3 }}>
+        Mavericks Player Projection
+      </Typography>
       
-      <div className="projection-container">
-        <div className="projection-form">
-          <div className="form-group">
-            <label htmlFor="player-select">Select Player:</label>
-            <select
+      <Box sx={{ 
+        display: 'grid', 
+        gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, 
+        gap: '30px' 
+      }}>
+        <Box sx={{ 
+          backgroundColor: '#f8f9fa', 
+          padding: '25px', 
+          borderRadius: '8px', 
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)' 
+        }}>
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <InputLabel id="player-select-label">Select Player</InputLabel>
+            <Select
+              labelId="player-select-label"
               id="player-select"
               value={selectedPlayerId}
               onChange={handlePlayerChange}
+              label="Select Player"
             >
-              <option value="">-- Select a player --</option>
+              <MenuItem value="">-- Select a player --</MenuItem>
               {allPlayers.map(p => (
-                <option key={p.playerId} value={p.playerId.toString()}>
+                <MenuItem key={p.playerId} value={p.playerId.toString()}>
                   {p.name} - {p.currentTeam}
-                </option>
+                </MenuItem>
               ))}
-            </select>
-          </div>
+            </Select>
+          </FormControl>
           
           {player && (
             <>
-              <div className="player-summary">
-                <div className="player-info">
-                  <h3>{player.name}</h3>
-                  <p>{player.currentTeam} | {player.league}</p>
-                </div>
-                {player.photoUrl && (
-                  <div className="player-photo">
-                    <img 
-                      src={player.photoUrl} 
-                      alt={player.name}
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = 'https://via.placeholder.com/100';
-                      }}
-                    />
-                  </div>
-                )}
-              </div>
+              <Card sx={{ mb: 2 }}>
+                <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Box>
+                    <Typography variant="h6" component="div">
+                      {player.name}
+                    </Typography>
+                    <Typography color="text.secondary">
+                      {player.currentTeam} | {player.league}
+                    </Typography>
+                  </Box>
+                  {player.photoUrl && (
+                    <Box sx={{ width: 80, height: 80, borderRadius: '50%', overflow: 'hidden' }}>
+                      <img 
+                        src={player.photoUrl} 
+                        alt={player.name}
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = 'https://via.placeholder.com/100';
+                        }}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    </Box>
+                  )}
+                </CardContent>
+              </Card>
               
-              <div className="form-group">
-                <label htmlFor="timeline">Projection Timeline:</label>
-                <select
+              <FormControl fullWidth sx={{ mb: 2 }}>
+                <InputLabel id="timeline-label">Projection Timeline</InputLabel>
+                <Select
+                  labelId="timeline-label"
                   id="timeline"
                   value={timeline}
                   onChange={(e) => setTimeline(e.target.value)}
+                  label="Projection Timeline"
                 >
-                  <option value="1">1 Year</option>
-                  <option value="3">3 Years</option>
-                  <option value="5">5 Years</option>
-                </select>
-              </div>
+                  <MenuItem value="1">1 Year</MenuItem>
+                  <MenuItem value="3">3 Years</MenuItem>
+                  <MenuItem value="5">5 Years</MenuItem>
+                </Select>
+              </FormControl>
               
-              <div className="form-group">
-                <label htmlFor="role">Projected Role:</label>
-                <select
+              <FormControl fullWidth sx={{ mb: 2 }}>
+                <InputLabel id="role-label">Projected Role</InputLabel>
+                <Select
+                  labelId="role-label"
                   id="role"
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
+                  label="Projected Role"
                 >
-                  <option value="starter">Starter</option>
-                  <option value="rotation">Rotation Player</option>
-                  <option value="bench">Bench Player</option>
-                  <option value="specialist">Specialist</option>
-                </select>
-              </div>
+                  <MenuItem value="starter">Starter</MenuItem>
+                  <MenuItem value="rotation">Rotation Player</MenuItem>
+                  <MenuItem value="bench">Bench Player</MenuItem>
+                  <MenuItem value="specialist">Specialist</MenuItem>
+                </Select>
+              </FormControl>
               
-              <div className="form-group">
-                <label>Focus Areas:</label>
-                <div className="focus-areas">
-                  {FOCUS_AREAS.map(area => (
-                    <div key={area.id} className="focus-area-option">
-                      <input
-                        type="checkbox"
-                        id={`focus-${area.id}`}
-                        checked={focusAreas.includes(area.id)}
+              <Typography variant="subtitle1" sx={{ mb: 1 }}>Focus Areas:</Typography>
+              <FormGroup sx={{ mb: 2 }}>
+                {FOCUS_AREAS.map(area => (
+                  <FormControlLabel
+                    key={area.id}
+                    control={
+                      <Checkbox 
+                        checked={focusAreas.includes(area.id)} 
                         onChange={() => toggleFocusArea(area.id)}
+                        name={area.id} 
                       />
-                      <label htmlFor={`focus-${area.id}`}>{area.label}</label>
-                    </div>
-                  ))}
-                </div>
-              </div>
+                    }
+                    label={area.label}
+                  />
+                ))}
+              </FormGroup>
               
-              <button
-                className="generate-button"
+              <Button
+                variant="contained"
+                color="primary"
                 onClick={generateProjection}
                 disabled={isLoading}
+                fullWidth
+                sx={{ py: 1.5 }}
               >
-                {isLoading ? loadingMessage || 'Generating...' : 'Generate Projection'}
-              </button>
+                {isLoading ? 
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <CircularProgress size={24} sx={{ mr: 1, color: 'white' }} />
+                    {loadingMessage || 'Generating...'}
+                  </Box> 
+                  : 'Generate Projection'
+                }
+              </Button>
             </>
           )}
           
           {error && (
-            <div className="error-message">{error}</div>
+            <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>
           )}
-        </div>
+        </Box>
         
         {projection && (
-          <div className="projection-results">
-            <h2>Scouting Projection</h2>
-            <div className="projection-content">
+          <Box sx={{ 
+            backgroundColor: '#f8f9fa', 
+            padding: '25px', 
+            borderRadius: '8px', 
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)' 
+          }}>
+            <Typography variant="h5" color="primary" sx={{ borderBottom: '2px solid', borderColor: 'primary.main', pb: 1, mb: 2 }}>
+              Scouting Projection
+            </Typography>
+            <Box sx={{ whiteSpace: 'pre-line' }}>
               {formatReport(projection)}
-            </div>
-          </div>
+            </Box>
+          </Box>
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

@@ -1,50 +1,107 @@
 import React from 'react';
-import styles from './Home.module.css';
+import { 
+  Typography, 
+  Container, 
+  Box, 
+  Grid, 
+  Paper, 
+  Card, 
+  CardContent 
+} from '@mui/material';
 import logo from '../../public/logo.png';
 
-// home page - pretty basic for now
+// home page with MUI styling for consistency
 function Home() {
-  // helps debug CSS modules issue
-  console.log('Styles object:', styles);
-
   return (
-    <div className={styles.container}>
-      <div className={styles.welcomeSection}>
-        <img 
-          src={logo}
-          alt="Mavericks Logo" 
-          className={styles.logo}
-          style={{ maxWidth: '200px' }}
-        />
-        <h2 className={styles.title}>Welcome to the Mavericks Draft Hub</h2>
-        <p className={styles.subtitle}>Your tool for evaluating NBA Draft prospects</p>
-      </div>
+    <Container maxWidth="lg" disableGutters={false} sx={{ width: '100%', py: 4, px: { xs: 2, sm: 3 } }}>
+      <Paper 
+        elevation={2} 
+        sx={{ 
+          p: 4, 
+          mb: 4, 
+          textAlign: 'center',
+          borderRadius: 2
+        }}
+      >
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+          <img 
+            src={logo}
+            alt="Mavericks Logo" 
+            style={{ maxWidth: '200px' }}
+          />
+        </Box>
+        <Typography variant="h4" component="h1" color="primary" gutterBottom>
+          Welcome to the Mavericks Draft Hub
+        </Typography>
+        <Typography variant="subtitle1" color="text.secondary">
+          Your tool for evaluating NBA Draft prospects
+        </Typography>
+      </Paper>
       
-      <div className={styles.features}>
-        <h3 className={styles.featuresTitle}>Features</h3>
-        <div className={styles.featureGrid}>
-          <div className={styles.featureCard}>
-            <h4 className={styles.featureName}>Big Board</h4>
-            <p className={styles.featureDescription}>
-              View the latest NBA Draft prospects and their stats, you are able to filter by position, team, and more. Get deeper insights and log in notes about the prospects as well as a Mavericks fit option where you set specific traits that the mavericks are looking for and it will show you prospects that match those traits.
-            </p>
-          </div>
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h5" component="h2" color="primary" gutterBottom sx={{ mb: 3 }}>
+          Features
+        </Typography>
+        
+        <Box sx={{ 
+          display: 'flex', 
+          flexDirection: { xs: 'column', sm: 'row' },
+          gap: 3,
+          flexWrap: 'wrap'
+        }}>
+          <Box sx={{ 
+            flex: { xs: '1 0 100%', sm: '1 0 45%', md: '1 0 30%' },
+            minWidth: { sm: '280px' }
+          }}>
+            <Card sx={{ height: '100%' }}>
+              <CardContent>
+                <Typography variant="h6" component="h3" color="primary" gutterBottom>
+                  Big Board
+                </Typography>
+                <Typography variant="body2">
+                  View the latest NBA Draft prospects and their stats. Filter by position and team, 
+                  get insights, and find prospects that match the Mavericks' needs.
+                </Typography>
+              </CardContent>
+            </Card>
+          </Box>
           
-          <div className={styles.featureCard}>
-            <h4 className={styles.featureName}>Data Visualization</h4>
-            <p className={styles.featureDescription}>
-              See how prospects stack up against each other in a variety of categories. See generated charts based on your specifications and see how prospects rank.
-            </p>
-          </div>
-          <div className={styles.featureCard}>
-            <h4 className={styles.featureName}>Player Projections AI</h4>
-            <p className={styles.featureDescription}>
-              Consult with a vetted AI model to get insights on prospect projection with historical data and reasoning. Modify your search with time, position, and skillset.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+          <Box sx={{ 
+            flex: { xs: '1 0 100%', sm: '1 0 45%', md: '1 0 30%' },
+            minWidth: { sm: '280px' }
+          }}>
+            <Card sx={{ height: '100%' }}>
+              <CardContent>
+                <Typography variant="h6" component="h3" color="primary" gutterBottom>
+                  Data Visualization
+                </Typography>
+                <Typography variant="body2">
+                  See how prospects stack up against each other with interactive 
+                  charts and visualizations based on your specifications.
+                </Typography>
+              </CardContent>
+            </Card>
+          </Box>
+          
+          <Box sx={{ 
+            flex: { xs: '1 0 100%', sm: '1 0 45%', md: '1 0 30%' },
+            minWidth: { sm: '280px' }
+          }}>
+            <Card sx={{ height: '100%' }}>
+              <CardContent>
+                <Typography variant="h6" component="h3" color="primary" gutterBottom>
+                  Player Projections AI
+                </Typography>
+                <Typography variant="body2">
+                  Get AI-powered insights on prospect projections. Customize by 
+                  timeline, position, and development focus areas.
+                </Typography>
+              </CardContent>
+            </Card>
+          </Box>
+        </Box>
+      </Box>
+    </Container>
   );
 }
 

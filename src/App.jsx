@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Box, CssBaseline } from '@mui/material';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import BigBoard from './pages/BigBoard';
@@ -11,9 +12,10 @@ import './App.css';
 function App() {
   return (
     <Router>
-      <div className="App">
+      <CssBaseline />
+      <Box sx={{ minHeight: '100vh', bgcolor: '#f5f5f5' }}>
         <Navbar />
-        <div className="content">
+        <Box>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/big-board" element={<BigBoard />} />
@@ -22,8 +24,8 @@ function App() {
             <Route path="/player/:id/projection" element={<PlayerProjection />} />
             <Route path="/projection" element={<PlayerProjection />} />
           </Routes>
-        </div>
-      </div>
+        </Box>
+      </Box>
     </Router>
   );
 }
