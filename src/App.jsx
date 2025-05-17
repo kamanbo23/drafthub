@@ -5,8 +5,10 @@ import Home from './pages/Home';
 import BigBoard from './pages/BigBoard';
 import DataViz from './pages/DataViz';
 import PlayerDetails from './pages/PlayerDetails';
+import PlayerProjection from './pages/PlayerProjection';
 import './App.css';
 
+// handles routing
 function App() {
   return (
     <Router>
@@ -18,6 +20,8 @@ function App() {
             <Route path="/big-board" element={<BigBoard />} />
             <Route path="/data-viz" element={<DataViz />} />
             <Route path="/player/:id" element={<PlayerDetails />} />
+            <Route path="/player/:id/projection" element={<PlayerProjection />} />
+            <Route path="/projection" element={<PlayerProjection />} />
           </Routes>
         </div>
       </div>

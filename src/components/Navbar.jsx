@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './Navbar.css';
 
+// todo: update navbar with user auth later
 function Navbar() {
   return (
     <nav className="navbar">
@@ -12,9 +13,10 @@ function Navbar() {
         <Link to="/" className="nav-link">Home</Link>
         <Link to="/big-board" className="nav-link">Big Board</Link>
         <Link to="/data-viz" className="nav-link">Data Viz</Link>
+        <Link to="/projection" className="nav-link">Player Projections</Link>
       </div>
     </nav>
   );
 }
 
-export default Navbar; 
+export default Navbar;

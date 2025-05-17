@@ -1,8 +1,10 @@
 import React from 'react';
 import styles from './Home.module.css';
 
+// home page - pretty basic for now
 function Home() {
-  console.log('Styles object:', styles); // Debug log
+  // for debugging
+  console.log('Styles object:', styles);
 
   return (
     <div className={styles.container}>
@@ -11,7 +13,7 @@ function Home() {
           src="/Mavericks-logo.png" 
           alt="Mavericks Logo" 
           className={styles.logo}
-          style={{ maxWidth: '200px' }} // Fallback inline style
+          style={{ maxWidth: '200px' }}
         />
         <h2 className={styles.title}>Welcome to the Mavericks Draft Hub</h2>
         <p className={styles.subtitle}>Your tool for evaluating NBA Draft prospects</p>
@@ -34,9 +36,9 @@ function Home() {
             </p>
           </div>
           <div className={styles.featureCard}>
-            <h4 className={styles.featureName}>PlayerProjections AI</h4>
+            <h4 className={styles.featureName}>Player Projections AI</h4>
             <p className={styles.featureDescription}>
-              Consult with a vetted AI model to get insights on prospect project with historical data and reasoning. Modify your search with time, postion, and skillset.
+              Consult with a vetted AI model to get insights on prospect projection with historical data and reasoning. Modify your search with time, position, and skillset.
             </p>
           </div>
         </div>

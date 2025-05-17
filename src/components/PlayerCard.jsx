@@ -1,27 +1,29 @@
 import React, { useState, useEffect } from 'react';
-
 import { useNavigate } from 'react-router-dom';
 import './PlayerCard.css';
 import playerData from '../intern_project_data.json';
 
+// playerCard shows basic info - might add stats later
 const PlayerCard = ({ player }) => {
   const navigate = useNavigate();
   const [scoutingReports, setScoutingReports] = useState([]);
 
+  //  scouting reports on mount
   useEffect(() => {
-    // Get scouting reports for this player
     const reports = playerData.scoutingReports ? 
       playerData.scoutingReports.filter(r => r.playerId === player.playerId) : 
       [];
     setScoutingReports(reports);
   }, [player.playerId]);
   
+  // height from inches to feet'inches"
   const formatHeight = (inches) => {
     const feet = Math.floor(inches / 12);
     const remainingInches = inches % 12;
     return `${feet}'${remainingInches}"`;
   };
 
+  // navigate to player details page
   const handleViewDetails = () => {
     navigate(`/player/${player.playerId}`, { state: { player } });
   };

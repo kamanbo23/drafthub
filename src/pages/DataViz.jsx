@@ -1,5 +1,6 @@
 import React from 'react';
 
+// todo:add actual charts, maybe use recharts or d3.js
 function DataViz() {
   return (
     <div className="data-viz">

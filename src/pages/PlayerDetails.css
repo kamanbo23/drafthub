@@ -121,27 +121,81 @@
 }
 
 .data-viz-section {
-  margin-top: 2rem;
-  text-align: center;
-}
-
-.data-viz-button {
-  background-color: #7209b7; /* Purple for data viz */
-  color: white;
-  border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: 4px;
-  font-weight: 600;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.data-viz-section h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #2c3e50;
+}
+
+.chart-controls {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e1e4e8;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+}
+
+.control-group label {
+  margin-right: 8px;
+  font-weight: 600;
+}
+
+.control-group select {
+  padding: 4px 8px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background-color: white;
+  font-size: 14px;
+}
+
+.performance-chart {
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+.no-data {
+  font-style: italic;
+  color: #6c757d;
+  text-align: center;
+}
+
+/* Override recharts styling */
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: #e9ecef;
+}
+
+.recharts-tooltip-wrapper {
+  font-size: 12px;
+}
+
+/* Maintain previous styling */
+.data-viz-button {
+  padding: 8px 16px;
+  background-color: #17a2b8;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 15px;
+  transition: background-color 0.2s;
+}
+
 .data-viz-button:hover {
-  background-color: #560bad; /* Darker purple */
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  background-color: #138496;
 }
 
 /* Reports Section Styles */
@@ -316,4 +370,26 @@ li {
 .rank-lower {
   color: #922b21; /* Dark red */
   background-color: #fdedec; /* Light red background */
+}
+
+.action-buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.projection-button {
+  padding: 8px 16px;
+  background-color: #00538c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.projection-button:hover {
+  background-color: #003b65;
 }

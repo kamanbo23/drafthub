@@ -3,6 +3,8 @@ import PlayerCard from '../components/PlayerCard';
 import playerData from '../intern_project_data.json';
 import './BigBoard.css';
 
+//  all players in a grid
+// if time add filtering by position, team, etc
 const BigBoard = () => {
   return (
     <div className="big-board">
