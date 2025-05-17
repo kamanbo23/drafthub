@@ -1,16 +1,17 @@
 import React from 'react';
 import styles from './Home.module.css';
+import logo from '../../public/logo.png';
 
 // home page - pretty basic for now
 function Home() {
-  // for debugging
+  // helps debug CSS modules issue
   console.log('Styles object:', styles);
 
   return (
     <div className={styles.container}>
       <div className={styles.welcomeSection}>
         <img 
-          src="/Mavericks-logo.png" 
+          src={logo}
           alt="Mavericks Logo" 
           className={styles.logo}
           style={{ maxWidth: '200px' }}

@@ -87,16 +87,21 @@ const PlayerDetails = () => {
       return playerGameData;
     }
     
-    const today = new Date();
-    let cutoffDate = new Date();
+    // Using March 15 as approximate start of postseason
+    const postseasonStart = new Date('2025-03-15');
     
-    if (dateRange === 'month') {
-      cutoffDate.setMonth(today.getMonth() - 1);
-    } else if (dateRange === '3months') {
-      cutoffDate.setMonth(today.getMonth() - 3);
+    if (dateRange === 'regular') {
+      // Only regular season games (before March 15)
+      return playerGameData.filter(game => new Date(game.date) < postseasonStart);
+    } else if (dateRange === 'postseason') {
+      // Only postseason games (March 15 and after)
+      return playerGameData.filter(game => new Date(game.date) >= postseasonStart);
+    } else if (dateRange === 'last10') {
+      // Last 10 games played
+      return playerGameData.slice(-10);
     }
     
-    return playerGameData.filter(game => new Date(game.date) >= cutoffDate);
+    return playerGameData;
   };
 
   // this isn't doing anything yet - just adds to local state
@@ -263,8 +268,9 @@ const PlayerDetails = () => {
                   <label>Period: </label>
                   <select value={dateRange} onChange={(e) => setDateRange(e.target.value)}>
                     <option value="all">All Time</option>
-                    <option value="month">Last Month</option>
-                    <option value="3months">Last 3 Months</option>
+                    <option value="regular">Regular Season</option>
+                    <option value="postseason">Postseason</option>
+                    <option value="last10">Last 10 Games</option>
                   </select>
                 </div>
               </div>
