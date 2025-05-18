@@ -3,11 +3,11 @@ import {
   AppBar, 
   Box, 
   Toolbar, 
-  Typography, 
   Button, 
   useTheme 
 } from '@mui/material';
 import { Link } from 'react-router-dom';
+import logo from '../../public/logo.png'; // Import the logo
 
 function Navbar() {
   const theme = useTheme();
@@ -16,14 +16,15 @@ function Navbar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{ bgcolor: theme.palette.primary.main }}>
         <Toolbar>
-          <Typography 
-            variant="h6" 
-            sx={{ flexGrow: 1, textAlign: 'left', fontWeight: 'bold' }}
-          >
-            <Link to="/" style={{ color: 'white', textDecoration: 'none' }}>
-              NBA Draft Hub
+          <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
+            <Link to="/" style={{ display: 'flex', alignItems: 'center' }}>
+              <img 
+                src={logo} 
+                alt="Mavericks Logo" 
+                style={{ height: '40px' }} 
+              />
             </Link>
-          </Typography>
+          </Box>
           <Button color="inherit" component={Link} to="/">Home</Button>
           <Button color="inherit" component={Link} to="/big-board">Big Board</Button>
           <Button color="inherit" component={Link} to="/data-viz">Data Visualization</Button>

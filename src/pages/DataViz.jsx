@@ -77,6 +77,19 @@ function DataViz() {
         }}
       >
         Draft Prospect Visualization
+
+      </Typography>
+
+      <Typography 
+        variant="body2" 
+        align="center" 
+        sx={{ 
+          mb: 2, 
+          mt: -2, 
+          fontStyle: 'italic',
+        }}
+      >
+        <p>Use this tool on Desktop preferably due to the nature of a scatter plot.</p>
       </Typography>
       
       <Paper elevation={2} sx={{ p: 3, mb: 3, borderRadius: 2 }}>
@@ -123,7 +136,6 @@ function DataViz() {
         </Box>
       </Paper>
       
-      {/* Chart section */}
       <Paper elevation={2} sx={{ p: 4, borderRadius: 2 }}>
         <Typography variant="h5" sx={{ mb: 3 }}>
           {getMetricLabel(xMetric)} vs {getMetricLabel(yMetric)}
