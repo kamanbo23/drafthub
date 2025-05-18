@@ -26,8 +26,8 @@ function Navbar() {
           </Typography>
           <Button color="inherit" component={Link} to="/">Home</Button>
           <Button color="inherit" component={Link} to="/big-board">Big Board</Button>
-          <Button color="inherit" component={Link} to="/data-viz">Data Viz</Button>
-          <Button color="inherit" component={Link} to="/projection">Projections</Button>
+          <Button color="inherit" component={Link} to="/data-viz">Data Visualization</Button>
+          <Button color="inherit" component={Link} to="/projection">AI Projections</Button>
         </Toolbar>
       </AppBar>
     </Box>

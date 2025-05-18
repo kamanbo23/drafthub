@@ -263,7 +263,7 @@ Please provide a professional, concise evaluation with clear section headings. F
       <Button 
         variant="contained" 
         color="primary" 
-        onClick={() => navigate(-1)}
+        onClick={() => navigate('/')}
         sx={{ mb: 2 }}
       >
         Back
@@ -276,7 +276,7 @@ Please provide a professional, concise evaluation with clear section headings. F
         color="primary"
         sx={{
           mb: 4,
-          fontWeight: 'bold', // Make text bold
+          fontWeight: 'bold',
           textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)',
         }}
       >

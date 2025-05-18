@@ -8,8 +8,8 @@ import {
   Tooltip, 
   ResponsiveContainer 
 } from 'recharts';
+import PlayerTooltip from './PlayerTooltip';
 
-// A basic scatter plot component for player data visualization
 const ScatterPlotChart = ({ data, xKey, yKey, xLabel, yLabel }) => {
   return (
     <ResponsiveContainer width="100%" height={400}>
@@ -29,8 +29,13 @@ const ScatterPlotChart = ({ data, xKey, yKey, xLabel, yLabel }) => {
           name={yLabel} 
           label={{ value: yLabel, angle: -90, position: 'left' }} 
         />
-        <Tooltip cursor={{ strokeDasharray: '3 3' }} />
-        <Scatter name="Players" data={data} fill="#0053a0" />
+        <Tooltip content={<PlayerTooltip />} />
+        <Scatter 
+          name="Players" 
+          data={data} 
+          fill="#0053a0" 
+          fillOpacity={0.8}
+        />
       </ScatterChart>
     </ResponsiveContainer>
   );
