@@ -4,8 +4,8 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import './PlayerDetails.css';
 import playerData from '../intern_project_data.json';
 
-//  player page with stats, reports
-// future backend plans if extended project add ability to save reports to database
+// This page got way too big - might need to split it up later
+// @TODO: refactor this monster when I have time
 const PlayerDetails = () => {
   const { id } = useParams();
   const location = useLocation();
@@ -16,13 +16,16 @@ const PlayerDetails = () => {
   const [measurements, setMeasurements] = useState(null);
   const [scoutingReports, setScoutingReports] = useState([]);
   const [userReports, setUserReports] = useState([]);
+  // form inputs
   const [scoutName, setScoutName] = useState('');
   const [reportContent, setReportContent] = useState('');
+  // chart data
   const [playerGameData, setPlayerGameData] = useState([]);
-  const [statType, setStatType] = useState('points');
+  const [statType, setStatType] = useState('points'); // default to points
   const [dateRange, setDateRange] = useState('all');
   
   useEffect(() => {
+    // had to add this check because of some weird routing issues
     if (!player && id) {
       const foundPlayer = playerData.bio.find(p => p.playerId.toString() === id);
       if (foundPlayer) {
@@ -33,11 +36,11 @@ const PlayerDetails = () => {
     if (player || id) {
       const playerId = player?.playerId || parseInt(id);
       
-      //  scout rankings
+      // find the scout rankings data - this JSON structure is a mess!
       const rankings = playerData.scoutRankings?.find(r => r.playerId === playerId);
       setScoutRankings(rankings);
       
-      //  consensus rank
+      // calculate avg rank - probably a better way to do this
       if (rankings) {
         const validRanks = [
           rankings["ESPN Rank"],
@@ -48,28 +51,31 @@ const PlayerDetails = () => {
         ].filter(rank => rank !== null);
         
         if (validRanks.length > 0) {
+          // Math.round feels like the right approach here but could be biased
           const consensus = Math.round(validRanks.reduce((a, b) => a + b, 0) / validRanks.length);
           setConsensusRank(consensus);
         }
       }
       
-      //  measurements
+      // get player measurements 
       const playerMeasurements = playerData.measurements?.find(m => m.playerId === playerId);
       setMeasurements(playerMeasurements);
 
-      //  scouting reports
+      // scouting reports
       const reports = playerData.scoutingReports?.filter(r => r.playerId === playerId) || [];
       setScoutingReports(reports);
       
+      // grab game logs for charts
       const gameLogs = playerData.game_logs?.filter(game => game.playerId === playerId) || [];
       const sortedGames = [...gameLogs].sort((a, b) => new Date(a.date) - new Date(b.date));
       
-      // transform for chart display - simplify data
+      // convert raw data to something the chart can use
+      // FIXME: points calculation is approximate, formula might be wrong
       const chartData = sortedGames.map(game => {
         const gameDate = new Date(game.date);
         return {
           date: gameDate.toLocaleDateString(),
-          points: game.fgm * 2 + game.tpm + game.ftm, // approximate points if not directly provided
+          points: game.fgm * 2 + game.tpm + game.ftm, 
           rebounds: (game.oreb || 0) + (game.dreb || 0),
           assists: game.ast || 0,
           steals: game.stl || 0,
@@ -79,37 +85,37 @@ const PlayerDetails = () => {
       
       setPlayerGameData(chartData);
     }
-  }, [player, id]);
+  }, [player, id]); // only re-run if these change
 
-  // handle filtering data based on date range
+  // filter game data by date - added this to show trends better
   const getFilteredData = () => {
     if (dateRange === 'all' || playerGameData.length === 0) {
       return playerGameData;
     }
     
-    // Using March 15 as approximate start of postseason
+    // this date is just a guess - might need to adjust based on actual season
     const postseasonStart = new Date('2025-03-15');
     
     if (dateRange === 'regular') {
-      // Only regular season games (before March 15)
       return playerGameData.filter(game => new Date(game.date) < postseasonStart);
     } else if (dateRange === 'postseason') {
-      // Only postseason games (March 15 and after)
       return playerGameData.filter(game => new Date(game.date) >= postseasonStart);
     } else if (dateRange === 'last10') {
-      // Last 10 games played
+      // newest games first
       return playerGameData.slice(-10);
     }
     
     return playerGameData;
   };
 
-  // this isn't doing anything yet - just adds to local state
+  // not connected to any backend yet, so this just updates local state
+  // I'll add a proper backend connection if I have time
   const handleReportSubmit = (e) => {
     e.preventDefault();
     
+    // simple form validation
     if (scoutName.trim() === '' || reportContent.trim() === '') {
-      alert('Please fill out both the scout name and report fields');
+      alert('Fill out all fields please');
       return;
     }
     
@@ -119,6 +125,7 @@ const PlayerDetails = () => {
       date: new Date().toLocaleDateString()
     };
     
+    // add to beginning of array so newest is on top
     setUserReports([newReport, ...userReports]);
     setScoutName('');
     setReportContent('');
@@ -135,15 +142,17 @@ const PlayerDetails = () => {
     );
   }
   
+  // helper function to format height nicely
   const formatHeight = (inches) => {
     const feet = Math.floor(inches / 12);
     const remainingInches = inches % 12;
     return `${feet}'${remainingInches}"`;
   };
   
-  // could make this better later
+  // quick and dirty function to show if scout is high/low on player
+  // might need to revisit this logic later - not sure if it's right
   const renderRankComparison = (rank) => {
-    if (rank === null || consensusRank === null) return null;
+    if (!rank || !consensusRank) return null;
     
     if (rank < consensusRank) {
       return <span className="rank-higher">Higher than consensus ▲</span>;
@@ -153,6 +162,12 @@ const PlayerDetails = () => {
     return null;
   };
   
+  // handles broken images
+  const handleImageError = (e) => {
+    e.target.src = 'https://via.placeholder.com/300';
+  };
+  
+  // this JSX got way out of hand... sorry future me
   return (
     <div className="player-details">
       <button className="back-button" onClick={() => navigate('/big-board')}>
@@ -173,10 +188,7 @@ const PlayerDetails = () => {
             <img 
               src={player.photoUrl} 
               alt={player.name}
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = 'https://via.placeholder.com/300';
-              }}
+              onError={handleImageError}
             />
           </div>
         </div>
@@ -303,7 +315,7 @@ const PlayerDetails = () => {
                   className="projection-button"
                   onClick={() => navigate(`/player/${player.playerId}/projection`, { state: { player } })}
                 >
-                  View Mavericks Projection
+                  View Future Fit and Mavericks Performance Projection
                 </button>
               </div>
             </div>
@@ -317,7 +329,6 @@ const PlayerDetails = () => {
           <div className="user-reports">
             {scoutingReports.length > 0 || userReports.length > 0 ? (
               <div className="reports-list">
-                {/* Show user submitted reports first */}
                 {userReports.map((report, index) => (
                   <div key={`user-${index}`} className="report user-submitted-report">
                     <div className="report-header">

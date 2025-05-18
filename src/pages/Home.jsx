@@ -6,9 +6,12 @@ import {
   Grid, 
   Paper, 
   Card, 
-  CardContent 
+  CardContent,
+  CardActions,
+  Button
 } from '@mui/material';
-import logo from '../../public/logo.png';
+import { Link } from 'react-router-dom';
+import logo from '/logo.png';
 
 // home page with MUI styling for consistency
 function Home() {
@@ -53,8 +56,8 @@ function Home() {
             flex: { xs: '1 0 100%', sm: '1 0 45%', md: '1 0 30%' },
             minWidth: { sm: '280px' }
           }}>
-            <Card sx={{ height: '100%' }}>
-              <CardContent>
+            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <CardContent sx={{ flexGrow: 1 }}>
                 <Typography variant="h6" component="h3" color="primary" gutterBottom>
                   Big Board
                 </Typography>
@@ -63,6 +66,17 @@ function Home() {
                   get insights, and find prospects that match the Mavericks' needs.
                 </Typography>
               </CardContent>
+              <CardActions>
+                <Button 
+                  variant="contained" 
+                  color="primary" 
+                  component={Link} 
+                  to="/big-board"
+                  fullWidth
+                >
+                  View Big Board
+                </Button>
+              </CardActions>
             </Card>
           </Box>
           
@@ -70,8 +84,8 @@ function Home() {
             flex: { xs: '1 0 100%', sm: '1 0 45%', md: '1 0 30%' },
             minWidth: { sm: '280px' }
           }}>
-            <Card sx={{ height: '100%' }}>
-              <CardContent>
+            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <CardContent sx={{ flexGrow: 1 }}>
                 <Typography variant="h6" component="h3" color="primary" gutterBottom>
                   Data Visualization
                 </Typography>
@@ -80,6 +94,17 @@ function Home() {
                   charts and visualizations based on your specifications.
                 </Typography>
               </CardContent>
+              <CardActions>
+                <Button 
+                  variant="contained" 
+                  color="primary" 
+                  component={Link} 
+                  to="/data-viz"
+                  fullWidth
+                >
+                  Explore Data
+                </Button>
+              </CardActions>
             </Card>
           </Box>
           
@@ -87,8 +112,8 @@ function Home() {
             flex: { xs: '1 0 100%', sm: '1 0 45%', md: '1 0 30%' },
             minWidth: { sm: '280px' }
           }}>
-            <Card sx={{ height: '100%' }}>
-              <CardContent>
+            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <CardContent sx={{ flexGrow: 1 }}>
                 <Typography variant="h6" component="h3" color="primary" gutterBottom>
                   Player Projections AI
                 </Typography>
@@ -97,6 +122,17 @@ function Home() {
                   timeline, position, and development focus areas.
                 </Typography>
               </CardContent>
+              <CardActions>
+                <Button 
+                  variant="contained" 
+                  color="primary" 
+                  component={Link} 
+                  to="/projection"
+                  fullWidth
+                >
+                  View Projections
+                </Button>
+              </CardActions>
             </Card>
           </Box>
         </Box>

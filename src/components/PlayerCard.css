@@ -1,4 +1,4 @@
-/* card container */
+/* Player card styling - created on 5/18/2025 */
 .player-card {
   background: white;
   border-radius: 8px;
@@ -11,13 +11,12 @@
   min-height: 500px; /* keep cards consistent height */
 }
 
-/* hover effect */
 .player-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* player photo */
+/* images */
 .player-image {
   width: 100%;
   height: 250px;
@@ -32,13 +31,13 @@
   object-fit: cover;
 }
 
-/* player name */
 .player-info h3 {
   margin: 0 0 8px 0;
   color: #333;
+  /* font-weight: 700; - too bold */
 }
 
-/* player details list */
+/* text stuff */
 .player-details {
   font-size: 14px;
 }
@@ -52,7 +51,7 @@
   color: #444;
 }
 
-/* view details button - make bigger later */
+/* TODO: make button bigger on mobile? */
 .player-details button {
   background-color: #0053a0; /* mavs blue */
   color: white;
@@ -70,7 +69,6 @@
   background-color: #00285e; /* darker blue */
 } 
 
-/* scouting reports section */
 .card-scouting-reports {
   margin-top: 16px;
   padding-top: 8px;
@@ -83,6 +81,7 @@
   font-size: 15px;
 }
 
+/* scouting report items */
 .card-report {
   background-color: #f8f8f8;
   border-radius: 4px;
@@ -96,7 +95,7 @@
   line-height: 1.4;
 }
 
-/* no reports message */
+/* empty state */
 .no-reports-message {
   margin-top: 16px;
   padding: 8px;
@@ -106,3 +105,11 @@
   color: #777;
   border-top: 1px solid #eee;
 }
+
+/* mobile stuff - fix this later
+@media (max-width: 600px) {
+  .player-card {
+    width: 100%;
+  }
+}
+*/

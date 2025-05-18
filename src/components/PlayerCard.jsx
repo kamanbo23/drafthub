@@ -1,28 +1,41 @@
 import React, { useState, useEffect } from 'react';
-
 import { useNavigate } from 'react-router-dom';
 import './PlayerCard.css';
 import playerData from '../intern_project_data.json';
 
+// card component for showing basic player info
+// clicking takes you to the full details page
 const PlayerCard = ({ player }) => {
   const navigate = useNavigate();
   const [scoutingReports, setScoutingReports] = useState([]);
 
+  // load reports when component mounts
   useEffect(() => {
-    const reports = playerData.scoutingReports ? 
-      playerData.scoutingReports.filter(r => r.playerId === player.playerId) : 
-      [];
+    // ugh, this JSON structure is annoying to work with
+    const reports = playerData.scoutingReports 
+      ? playerData.scoutingReports.filter(r => r.playerId === player.playerId) 
+      : [];
+      
     setScoutingReports(reports);
+    // console.log(`Found ${reports.length} reports for ${player.name}`);
   }, [player.playerId]);
   
-  const formatHeight = (inches) => {
+  // copied this from StackOverflow and tweaked it
+  function formatHeight(inches) {
     const feet = Math.floor(inches / 12);
     const remainingInches = inches % 12;
     return `${feet}'${remainingInches}"`;
+  }
+
+  // navigation handler
+  const handleViewDetails = () => {
+    // pass the player data through state to avoid another fetch
+    navigate(`/player/${player.playerId}`, { state: { player } });
   };
 
-  const handleViewDetails = () => {
-    navigate(`/player/${player.playerId}`, { state: { player } });
+  // simple error handler for images
+  const handleImageError = (e) => {
+    e.target.src = 'https://via.placeholder.com/150';
   };
 
   return (
@@ -31,10 +44,7 @@ const PlayerCard = ({ player }) => {
         <img 
           src={player.photoUrl} 
           alt={player.name}
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = 'https://via.placeholder.com/150';
-          }}
+          onError={handleImageError}
         />
       </div>
       <div className="player-info">
@@ -44,6 +54,7 @@ const PlayerCard = ({ player }) => {
           <p><strong>Height:</strong> {formatHeight(player.height)}</p>
           <p><strong>Weight:</strong> {player.weight} lbs</p>
           <p><strong>League:</strong> {player.league}</p>
+          {/* leaving this in for debugging */}
           <p><strong>Player ID:</strong> {player.playerId}</p>
           <p><strong>Report Count:</strong> {scoutingReports.length}</p>
           
@@ -58,7 +69,7 @@ const PlayerCard = ({ player }) => {
             </div>
           ) : (
             <div className="no-reports-message">
-              <p>No scouting reports available for this player but you can add your own reports within the player details page after clicking the button below.</p>
+              <p>No reports yet - add yours on the details page!</p>
             </div>
           )}
 

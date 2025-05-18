@@ -16,34 +16,39 @@ import { preparePlayerData, getAvailableMetrics } from '../utils/dataUtils';
 
 // basic data visualization with a scatter plot
 function DataViz() {
+  // state for player data
   const [allPlayers, setAllPlayers] = useState([]);
   const [filteredPlayers, setFilteredPlayers] = useState([]);
+  
+  // chart config
   const [xMetric, setXMetric] = useState('heightNoShoes');
   const [yMetric, setYMetric] = useState('wingspan');
   const [searchQuery, setSearchQuery] = useState('');
   
   const metrics = getAvailableMetrics();
 
+  // load data on mount
   useEffect(() => {
     const combinedData = preparePlayerData(playerData.bio, playerData.measurements);
     setAllPlayers(combinedData);
     setFilteredPlayers(combinedData);
   }, []);
 
-  // filter players when search query changes
+  // simple search filter
   useEffect(() => {
     if (!searchQuery.trim()) {
       setFilteredPlayers(allPlayers);
       return;
     }
 
+    const searchLower = searchQuery.toLowerCase();
     const filtered = allPlayers.filter(player => 
-      player.name.toLowerCase().includes(searchQuery.toLowerCase())
+      player.name.toLowerCase().includes(searchLower)
     );
     setFilteredPlayers(filtered);
   }, [searchQuery, allPlayers]);
 
-  //  metric selection changes
+  // handler functions
   const handleXMetricChange = (e) => {
     setXMetric(e.target.value);
   };
@@ -52,12 +57,11 @@ function DataViz() {
     setYMetric(e.target.value);
   };
 
-  //  search 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
 
-  // label metric
+  // helper to get the display label for a metric
   const getMetricLabel = (key) => {
     const metric = metrics.find(m => m.key === key);
     return metric ? metric.label : key;
@@ -72,12 +76,11 @@ function DataViz() {
         color="primary"
         sx={{
           mb: 4,
-          fontWeight: 'bold', // Make text bold
-          textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)', // Add subtle shadow
+          fontWeight: 'bold',
+          textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)',
         }}
       >
         Draft Prospect Visualization
-
       </Typography>
 
       <Typography 
@@ -149,7 +152,6 @@ function DataViz() {
             yLabel={getMetricLabel(yMetric)}
           />
         </Box>
-
       </Paper>
     </Container>
   );
