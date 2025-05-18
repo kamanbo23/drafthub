@@ -11,7 +11,6 @@ const PlayerCard = ({ player }) => {
 
   // load reports when component mounts
   useEffect(() => {
-    // ugh, this JSON structure is annoying to work with
     const reports = playerData.scoutingReports 
       ? playerData.scoutingReports.filter(r => r.playerId === player.playerId) 
       : [];
@@ -20,7 +19,7 @@ const PlayerCard = ({ player }) => {
     // console.log(`Found ${reports.length} reports for ${player.name}`);
   }, [player.playerId]);
   
-  // copied this from StackOverflow and tweaked it
+  // copied this from StackOverflow and tweaked
   function formatHeight(inches) {
     const feet = Math.floor(inches / 12);
     const remainingInches = inches % 12;
@@ -33,17 +32,22 @@ const PlayerCard = ({ player }) => {
     navigate(`/player/${player.playerId}`, { state: { player } });
   };
 
-  // simple error handler for images
+  // backup in case the image fails to load for some reason
   const handleImageError = (e) => {
-    e.target.src = 'https://via.placeholder.com/150';
+    e.target.src = '/placeholder-user.svg';
+  };
+
+  // choose the right image source based on whether player has a photo
+  const getImageSrc = () => {
+    return player.photoUrl || '/placeholder-user.svg';
   };
 
   return (
     <div className="player-card">
       <div className="player-image">
         <img 
-          src={player.photoUrl} 
-          alt={player.name}
+          src={getImageSrc()} 
+          alt={`${player.name} photo`}
           onError={handleImageError}
         />
       </div>
@@ -54,7 +58,6 @@ const PlayerCard = ({ player }) => {
           <p><strong>Height:</strong> {formatHeight(player.height)}</p>
           <p><strong>Weight:</strong> {player.weight} lbs</p>
           <p><strong>League:</strong> {player.league}</p>
-          {/* leaving this in for debugging */}
           <p><strong>Player ID:</strong> {player.playerId}</p>
           <p><strong>Report Count:</strong> {scoutingReports.length}</p>
           

@@ -1,5 +1,5 @@
 //prepare player data by combining bio and measurements
-// created 5/15/2025 - needs cleanup someday
+// created 5/15/2025 - needs cleanup potentially
 export const preparePlayerData = (players, measurements) => {
   // merge player bio with their physical measurements
   return players.map(player => {

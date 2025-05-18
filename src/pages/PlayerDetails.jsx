@@ -5,7 +5,7 @@ import './PlayerDetails.css';
 import playerData from '../intern_project_data.json';
 
 // This page got way too big - might need to split it up later
-// @TODO: refactor this monster when I have time
+//  refactor this monster when I have time
 const PlayerDetails = () => {
   const { id } = useParams();
   const location = useLocation();
@@ -36,7 +36,7 @@ const PlayerDetails = () => {
     if (player || id) {
       const playerId = player?.playerId || parseInt(id);
       
-      // find the scout rankings data - this JSON structure is a mess!
+      // find the scout rankings data
       const rankings = playerData.scoutRankings?.find(r => r.playerId === playerId);
       setScoutRankings(rankings);
       
@@ -70,7 +70,7 @@ const PlayerDetails = () => {
       const sortedGames = [...gameLogs].sort((a, b) => new Date(a.date) - new Date(b.date));
       
       // convert raw data to something the chart can use
-      // FIXME: points calculation is approximate, formula might be wrong
+      // points calculation is approximate, formula might be wrong
       const chartData = sortedGames.map(game => {
         const gameDate = new Date(game.date);
         return {
@@ -109,7 +109,6 @@ const PlayerDetails = () => {
   };
 
   // not connected to any backend yet, so this just updates local state
-  // I'll add a proper backend connection if I have time
   const handleReportSubmit = (e) => {
     e.preventDefault();
     
@@ -142,7 +141,7 @@ const PlayerDetails = () => {
     );
   }
   
-  // helper function to format height nicely
+  // helper function to format height 
   const formatHeight = (inches) => {
     const feet = Math.floor(inches / 12);
     const remainingInches = inches % 12;
@@ -164,10 +163,14 @@ const PlayerDetails = () => {
   
   // handles broken images
   const handleImageError = (e) => {
-    e.target.src = 'https://via.placeholder.com/300';
+    e.target.src = '/placeholder-user.svg';
   };
   
-  // this JSX got way out of hand... sorry future me
+  // get the right image src
+  const getPlayerImageSrc = () => {
+    return player.photoUrl || '/placeholder-user.svg';
+  };
+  
   return (
     <div className="player-details">
       <button className="back-button" onClick={() => navigate('/big-board')}>
@@ -186,8 +189,8 @@ const PlayerDetails = () => {
           </div>
           <div className="player-image">
             <img 
-              src={player.photoUrl} 
-              alt={player.name}
+              src={getPlayerImageSrc()} 
+              alt={`${player.name} headshot`}
               onError={handleImageError}
             />
           </div>

@@ -11,10 +11,10 @@ const BigBoard = () => {
   
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
-    // console.log('search changed:', e.target.value); // this helped debug the weird filtering issue
+    // console.log('search changed:', e.target.value); //  helped debug the filtering issue
   };
   
-  // Simple filter logic - case insensitive search on name/team/position
+  // Simple filter logic - case insensitive search on name/team only
   let filteredPlayers = playerData.bio;
   
   // only filter if there's actually a search term
@@ -46,10 +46,10 @@ const BigBoard = () => {
       {/* search box - might make this more advanced later */}
       <Box sx={{ maxWidth: '500px', margin: '0 auto 20px auto' }}>
         <TextField 
-          label="Search players"
+          label="Search players by name or school/team"
           variant="outlined"
           fullWidth
-          placeholder="Name, team, or position"
+          placeholder="Search by name or school/team"
           value={searchTerm}
           onChange={handleSearchChange}
         />
