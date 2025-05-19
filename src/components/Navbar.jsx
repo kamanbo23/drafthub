@@ -7,10 +7,10 @@ import {
   useTheme 
 } from '@mui/material';
 import { Link } from 'react-router-dom';
-import logo from '../../public/logo.png'; // easier than using the import alias
+import logo from './logo.png'; // easier than using the import alias
 
 // Basic navbar with links to main pages
-// Note: need to add mobile menu at some point
+// need to add mobile menu at some point if its unorganized
 function Navbar() {
   // get theme for consistent colors
   const theme = useTheme();
@@ -26,7 +26,6 @@ function Navbar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{ bgcolor: theme.palette.primary.main }}>
         <Toolbar>
-          {/* Logo on the left */}
           <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
             <Link to="/" style={{ display: 'flex', alignItems: 'center' }}>
               <img 
@@ -37,7 +36,6 @@ function Navbar() {
             </Link>
           </Box>
           
-          {/* Nav links - kinda messy but works */}
           <Button color="inherit" component={Link} to="/">Home</Button>
           <Button color="inherit" component={Link} to="/big-board">Big Board</Button>
           <Button 

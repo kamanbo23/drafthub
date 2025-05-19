@@ -8,11 +8,13 @@ import {
   InputLabel, 
   Select, 
   MenuItem, 
-  TextField 
+  TextField,
+  Button
 } from '@mui/material';
 import ScatterPlotChart from '../components/ScatterPlotChart';
 import playerData from '../intern_project_data.json';
 import { preparePlayerData, getAvailableMetrics } from '../utils/dataUtils';
+import { useNavigate } from 'react-router-dom';
 
 // basic data visualization with a scatter plot
 function DataViz() {
@@ -26,6 +28,7 @@ function DataViz() {
   const [searchQuery, setSearchQuery] = useState('');
   
   const metrics = getAvailableMetrics();
+  const navigate = useNavigate();
 
   // load data on mount
   useEffect(() => {
@@ -69,19 +72,29 @@ function DataViz() {
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
-      <Typography
-        variant="h3"
-        component="h1"
-        align="center"
-        color="primary"
-        sx={{
-          mb: 4,
-          fontWeight: 'bold',
-          textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)',
-        }}
-      >
-        Draft Prospect Visualization
-      </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Typography
+          variant="h3"
+          component="h1"
+          align="center"
+          color="primary"
+          sx={{
+            mb: 0,
+            fontWeight: 'bold',
+            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)',
+          }}
+        >
+          Draft Prospect Visualization
+        </Typography>
+        <Button 
+          variant="contained" 
+          color="secondary" 
+          onClick={() => navigate('/data-viz/face-off')} 
+          sx={{ ml: 2, fontWeight: 600, px: 2 }}
+        >
+          Face Off 
+        </Button>
+      </Box>
 
       <Typography 
         variant="body2" 
