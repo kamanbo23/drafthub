@@ -154,6 +154,7 @@ function Home() {
                   <Typography variant="body2">
                     See how prospects stack up against each other with interactive 
                     charts and visualizations based on your specifications.
+                     Also use the face off feature to compare the stats of 2-3 players side by side.
                   </Typography>
                 </CardContent>
                 <CardActions sx={{ p: '16px', pt: 0 }}>

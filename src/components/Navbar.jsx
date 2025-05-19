@@ -7,7 +7,6 @@ import {
   useTheme 
 } from '@mui/material';
 import { Link } from 'react-router-dom';
-import logo from './logo.png'; // easier than using the import alias
 
 // Basic navbar with links to main pages
 // need to add mobile menu at some point if its unorganized
@@ -29,7 +28,7 @@ function Navbar() {
           <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
             <Link to="/" style={{ display: 'flex', alignItems: 'center' }}>
               <img 
-                src={logo} 
+                src="/logo.png" 
                 alt="Mavs Logo" 
                 style={{ height: '40px' }} 
               />
