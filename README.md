@@ -11,11 +11,11 @@ A comprehensive draft analysis tool built for NBA front office decision-makers, 
 - **AI Player Projections**: Generate detailed future projections for prospects with customizable parameters
 - **Responsive Design**: Optimized for desktop, tablet, and mobile devices
 
-## 🚀 Live Demo
+## Live Website
 
 Visit the live application: [NBA Draft Hub](https://mavericksdrafthub.netlify.app)
 
-## 💻 Technology Stack
+## Technology Stack
 
 - **Frontend**: React with Vite
 - **UI Framework**: Material UI components
