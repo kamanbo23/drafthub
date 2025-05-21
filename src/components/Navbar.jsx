@@ -67,7 +67,7 @@ function Navbar() {
               >
                 <MenuItem onClick={handleMenuClose} component={Link} to="/">Home</MenuItem>
                 <MenuItem onClick={handleMenuClose} component={Link} to="/big-board">Big Board</MenuItem>
-                <MenuItem onClick={handleMenuClose} component={Link} to="/data-viz">Data Viz</MenuItem>
+                <MenuItem onClick={handleMenuClose} component={Link} to="/data-viz">Measurements</MenuItem>
                 <MenuItem onClick={handleMenuClose} component={Link} to="/projection">AI Projections</MenuItem>
               </Menu>
             </Box>
@@ -75,7 +75,7 @@ function Navbar() {
             <>
               <Button color="inherit" component={Link} to="/">Home</Button>
               <Button color="inherit" component={Link} to="/big-board">Big Board</Button>
-              <Button color="inherit" component={Link} to="/data-viz">Data Viz</Button>
+              <Button color="inherit" component={Link} to="/data-viz">Measurements</Button>
               <Button color="inherit" component={Link} to="/projection">AI Projections</Button>
             </>
           )}

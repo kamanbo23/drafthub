@@ -135,7 +135,6 @@ const PlayerProjection = () => {
         rank: consensusRank
       };
       
-      // TODO: improve this prompt with more info
       // our prompt for the API
       const prompt = `You are writing a professional scouting report for the Dallas Mavericks NBA team about ${playerInfo.name}.
 
@@ -173,34 +172,25 @@ Please provide a professional, concise evaluation with clear section headings. F
       
       setLoadingMsg(`Generating your report (takes ~15-20 secs)`);
       
-      // free tier takes a bit longer but works fine for now
-      const apiResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      // Call our Lambda function API endpoint
+      const lambdaEndpoint = import.meta.env.VITE_LAMBDA_API_ENDPOINT;
+      
+      const apiResponse = await fetch(lambdaEndpoint, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${API_KEY}`,
-          'HTTP-Referer': window.location.origin,
-          'X-Title': 'NBA Draft Hub'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          model: 'deepseek/deepseek-prover-v2:free',  // might upgrade this later
-          messages: [
-            {
-              role: 'system',
-              content: 'You are a professional NBA scout who writes clear, structured scouting reports with markdown formatting. Your reports are concise, insightful, and use section headings.'
-            },
-            {
-              role: 'user',
-              content: prompt
-            }
-          ],
+          prompt,
+          systemMessage: 'You are a professional NBA scout who writes clear, structured scouting reports with markdown formatting. Your reports are concise, insightful, and use section headings.',
           temperature: 0.7,
-          max_tokens: 2000  // TODO: check if we need more tokens for longer reports
+          maxTokens: 2000
         })
       });
       
       if (!apiResponse.ok) {
-        throw new Error('API error: ' + apiResponse.status);
+        const errorData = await apiResponse.json().catch(() => ({}));
+        throw new Error(`API error: ${apiResponse.status} – ${errorData.detail || errorData.error || apiResponse.statusText}`);
       }
       
       const data = await apiResponse.json();
@@ -211,7 +201,7 @@ Please provide a professional, concise evaluation with clear section headings. F
       
     } catch (err) {
       console.error('Error:', err);
-      setErrorMsg('Something went wrong with the API. Please try again.');
+      setErrorMsg(err.message || 'Something went wrong. Please try again.');
       setLoading(false);
       setLoadingMsg('');
     }

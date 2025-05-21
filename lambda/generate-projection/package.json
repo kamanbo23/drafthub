@@ -1,0 +1,21 @@
+{
+  "name": "drafthub-ai-projection-lambda",
+  "version": "1.0.0",
+  "description": "AWS Lambda function for NBA Draft Hub AI projections",
+  "main": "index.js",
+  "dependencies": {
+    "node-fetch": "^2.6.7"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "aws",
+    "lambda",
+    "nba",
+    "draft",
+    "ai"
+  ],
+  "author": "",
+  "license": "ISC"
+} 
