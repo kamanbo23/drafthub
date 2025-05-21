@@ -96,14 +96,28 @@ const FaceOff = () => {
         Pick 2 or 3 players to compare their stats side by side.
       </Typography>
       
-      <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', mb: 3 }}>
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: { xs: 'column', sm: 'row' },
+        gap: 2, 
+        justifyContent: 'center', 
+        mb: 3,
+        width: '100%'
+      }}>
         {[0, 1, 2].map(idx => (
-          <FormControl key={idx} sx={{ minWidth: 180 }}>
+          <FormControl key={idx} sx={{ minWidth: { xs: '100%', sm: 180 } }}>
             <InputLabel>{`Player ${idx + 1}`}</InputLabel>
             <Select
               value={selectedIds[idx] || ''}
               label={`Player ${idx + 1}`}
               onChange={e => handleDropdownChange(idx, e.target.value)}
+              MenuProps={{
+                PaperProps: {
+                  style: {
+                    maxHeight: 300
+                  }
+                }
+              }}
             >
               <MenuItem value="">None</MenuItem>
               {playerData.bio.map(p => (
@@ -117,8 +131,18 @@ const FaceOff = () => {
       </Box>
       
       {selectedPlayers.filter(Boolean).length >= 2 && (
-        <Paper sx={{ p: 2, borderRadius: 2, overflowX: 'auto' }}>
-          <Box sx={{ display: 'flex', borderBottom: '1px solid #eee', mb: 1 }}>
+        <Paper sx={{ 
+          p: 2, 
+          borderRadius: 2, 
+          overflowX: 'auto',
+          width: '100%'
+        }}>
+          <Box sx={{ 
+            display: 'flex', 
+            borderBottom: '1px solid #eee', 
+            mb: 1,
+            minWidth: { xs: 600, sm: 'auto' }
+          }}>
             <Box sx={{ width: 140, fontWeight: 600 }}>Stat</Box>
             {selectedPlayers.map((player, i) => (
               <Box key={i} sx={{ width: 160, fontWeight: 600, textAlign: 'center' }}>
@@ -127,7 +151,12 @@ const FaceOff = () => {
             ))}
           </Box>
           {coreStats.map(stat => (
-            <Box key={stat.key} sx={{ display: 'flex', borderBottom: '1px solid #f5f5f5', py: 1 }}>
+            <Box key={stat.key} sx={{ 
+              display: 'flex', 
+              borderBottom: '1px solid #f5f5f5', 
+              py: 1,
+              minWidth: { xs: 600, sm: 'auto' }
+            }}>
               <Box sx={{ width: 140 }}>{stat.label}</Box>
               {selectedPlayers.map((p, i) => (
                 <Box key={i} sx={{ width: 160, textAlign: 'center', fontWeight: 'bold', color: '#2565c0' }}>

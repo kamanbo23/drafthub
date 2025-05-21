@@ -12,6 +12,7 @@ import {
 
 // Todo: move this to env file 
 const API_KEY = import.meta.env.VITE_OPENROUTERKEY;
+// Remove hardcoded backup API key for security
 
 // these are the areas a player could improve in
 const FOCUS_AREAS = [
@@ -173,32 +174,41 @@ Please provide a professional, concise evaluation with clear section headings. F
       setLoadingMsg(`Generating your report (takes ~15-20 secs)`);
       
       // Call our Lambda function API endpoint
-      const lambdaEndpoint = import.meta.env.VITE_LAMBDA_API_ENDPOINT;
-      
-      const apiResponse = await fetch(lambdaEndpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          prompt,
-          systemMessage: 'You are a professional NBA scout who writes clear, structured scouting reports with markdown formatting. Your reports are concise, insightful, and use section headings.',
-          temperature: 0.7,
-          maxTokens: 2000
-        })
-      });
-      
-      if (!apiResponse.ok) {
-        const errorData = await apiResponse.json().catch(() => ({}));
-        throw new Error(`API error: ${apiResponse.status} – ${errorData.detail || errorData.error || apiResponse.statusText}`);
+      let lambdaEndpoint = import.meta.env.VITE_LAMBDA_API_ENDPOINT;
+
+      // If no environment variable is set, use the hardcoded fallback URL
+      if (!lambdaEndpoint) {
+        lambdaEndpoint = 'https://i53pa5ghxj.execute-api.us-west-1.amazonaws.com/production/generate-projection';
       }
       
-      const data = await apiResponse.json();
-      const content = data.choices[0].message.content;
-      setProjectionText(content);
-      setLoading(false);
-      setLoadingMsg('');
-      
+      try {
+        const apiResponse = await fetch(lambdaEndpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            prompt,
+            systemMessage: 'You are a professional NBA scout who writes clear, structured scouting reports with markdown formatting. Your reports are concise, insightful, and use section headings.',
+            temperature: 0.7,
+            maxTokens: 2000
+          })
+        });
+        
+        if (!apiResponse.ok) {
+          throw new Error(`API error: ${apiResponse.status}`);
+        }
+        
+        const data = await apiResponse.json();
+        const content = data.choices[0].message.content;
+        setProjectionText(content);
+      } catch (err) {
+        console.error('Error:', err);
+        setErrorMsg(err.message || 'Something went wrong. Please try again.');
+      } finally {
+        setLoading(false);
+        setLoadingMsg('');
+      }
     } catch (err) {
       console.error('Error:', err);
       setErrorMsg(err.message || 'Something went wrong. Please try again.');

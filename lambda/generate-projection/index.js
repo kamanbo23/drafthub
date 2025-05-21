@@ -4,7 +4,14 @@ const fetch = require('node-fetch');
  * AWS Lambda function to handle AI projection generation
  */
 exports.handler = async (event) => {
+  // Handle OPTIONS requests for CORS
+  if (event.httpMethod === 'OPTIONS') {
+    return formatResponse(200, {});
+  }
+  
   try {
+    console.log('Received event:', JSON.stringify(event, null, 2));
+    
     // Parse the incoming request body
     const body = JSON.parse(event.body || '{}');
     const { prompt, systemMessage, temperature, maxTokens } = body;
@@ -21,13 +28,15 @@ exports.handler = async (event) => {
       return formatResponse(500, { error: 'API key configuration missing' });
     }
     
+    console.log('Making request to OpenRouter API for prompt starting with:', prompt.substring(0, 50) + '...');
+    
     // Call the OpenRouter API
     const apiResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-        'HTTP-Referer': 'https://your-domain.com', // Replace with your actual domain
+        'HTTP-Referer': 'https://teal-vacherin-45b714.netlify.app', // Your Netlify domain
         'X-Title': 'NBA Draft Hub'
       },
       body: JSON.stringify({
@@ -56,6 +65,8 @@ exports.handler = async (event) => {
         errorData = { raw: errorText };
       }
       
+      console.error('OpenRouter API error:', apiResponse.status, errorData);
+      
       return formatResponse(apiResponse.status, { 
         error: `API error: ${apiResponse.status}`,
         details: errorData
@@ -64,6 +75,7 @@ exports.handler = async (event) => {
     
     // Return the successful response
     const data = await apiResponse.json();
+    console.log('Successfully received response from OpenRouter');
     return formatResponse(200, data);
     
   } catch (error) {
@@ -83,7 +95,7 @@ function formatResponse(statusCode, body) {
     statusCode,
     headers: {
       'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*', // Adjust this for security in production
+      'Access-Control-Allow-Origin': '*', // Allow all origins for now
       'Access-Control-Allow-Headers': 'Content-Type,Authorization',
       'Access-Control-Allow-Methods': 'POST,OPTIONS'
     },
