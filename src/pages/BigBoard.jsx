@@ -12,16 +12,21 @@ import {
   TableHead,
   TableRow,
   Paper,
-  IconButton
+  IconButton,
+  Switch,
+  FormControlLabel,
+  Grid
 } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useNavigate } from 'react-router-dom';
+import PlayerCard from '../components/PlayerCard';
 import './BigBoard.css';
 
 // Big Board with a table layout
 const BigBoard = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
+  const [isTableView, setIsTableView] = useState(true);
   
   // helper to format height for display
   const formatHeight = (inches) => {
@@ -125,7 +130,13 @@ const BigBoard = () => {
         NBA Draft Big Board
       </Typography>
       
-      <Box sx={{ maxWidth: '500px', margin: '0 auto 20px auto' }}>
+      <Box sx={{ 
+        maxWidth: '500px', 
+        margin: '0 auto 20px auto',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2
+      }}>
         <TextField 
           label="Search players by name or school/team"
           variant="outlined"
@@ -134,61 +145,90 @@ const BigBoard = () => {
           value={searchTerm}
           onChange={handleSearchChange}
         />
+        <FormControlLabel
+          control={
+            <Switch
+              checked={isTableView}
+              onChange={(e) => setIsTableView(e.target.checked)}
+              color="primary"
+            />
+          }
+          label={isTableView ? "Table View" : "Card View"}
+          sx={{ alignSelf: 'center' }}
+        />
       </Box>
       
-      <TableContainer component={Paper} sx={{ maxHeight: 650 }}>
-        <Table stickyHeader aria-label="draft big board">
-          <TableHead>
-            <TableRow>
-              <TableCell>Rank</TableCell>
-              <TableCell>Player</TableCell>
-              <TableCell>Team</TableCell>
-              <TableCell align="right">PTS</TableCell>
-              <TableCell align="right">REB</TableCell>
-              <TableCell align="right">AST</TableCell>
-              <TableCell>Details</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredPlayers.length > 0 ? (
-              filteredPlayers.map((player, index) => (
-                <TableRow 
-                  key={player.playerId} 
-                  hover
-                  sx={{ 
-                    cursor: 'pointer',
-                    '&:nth-of-type(odd)': { bgcolor: 'rgba(0, 0, 0, 0.03)' }
-                  }}
-                >
-                  <TableCell>{player.consensusRank !== 9999 ? player.consensusRank : '-'}</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>{player.name}</TableCell>
-                  <TableCell>{player.currentTeam || '-'}</TableCell>
-                  <TableCell align="right">{player.stats.points.toFixed(1)}</TableCell>
-                  <TableCell align="right">{player.stats.rebounds.toFixed(1)}</TableCell>
-                  <TableCell align="right">{player.stats.assists.toFixed(1)}</TableCell>
-                  <TableCell>
-                    <IconButton 
-                      color="primary" 
-                      onClick={() => handleRowClick(player)}
-                      size="small"
-                    >
-                      <ArrowForwardIcon />
-                    </IconButton>
+      {isTableView ? (
+        <TableContainer component={Paper} sx={{ maxHeight: 650 }}>
+          <Table stickyHeader aria-label="draft big board">
+            <TableHead>
+              <TableRow>
+                <TableCell>Rank</TableCell>
+                <TableCell>Player</TableCell>
+                <TableCell>Team</TableCell>
+                <TableCell align="right">PTS</TableCell>
+                <TableCell align="right">REB</TableCell>
+                <TableCell align="right">AST</TableCell>
+                <TableCell>Details</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredPlayers.length > 0 ? (
+                filteredPlayers.map((player, index) => (
+                  <TableRow 
+                    key={player.playerId} 
+                    hover
+                    sx={{ 
+                      cursor: 'pointer',
+                      '&:nth-of-type(odd)': { bgcolor: 'rgba(0, 0, 0, 0.03)' }
+                    }}
+                  >
+                    <TableCell>{player.consensusRank !== 9999 ? player.consensusRank : '-'}</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }}>{player.name}</TableCell>
+                    <TableCell>{player.currentTeam || '-'}</TableCell>
+                    <TableCell align="right">{player.stats.points.toFixed(1)}</TableCell>
+                    <TableCell align="right">{player.stats.rebounds.toFixed(1)}</TableCell>
+                    <TableCell align="right">{player.stats.assists.toFixed(1)}</TableCell>
+                    <TableCell>
+                      <IconButton 
+                        color="primary" 
+                        onClick={() => handleRowClick(player)}
+                        size="small"
+                      >
+                        <ArrowForwardIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={7} align="center">
+                    <Typography variant="h6">
+                      No players found! Try something else.
+                    </Typography>
                   </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={7} align="center">
-                  <Typography variant="h6">
-                    No players found! Try something else.
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      ) : (
+        <Grid container spacing={3}>
+          {filteredPlayers.length > 0 ? (
+            filteredPlayers.map((player) => (
+              <Grid item xs={12} sm={6} md={4} key={player.playerId}>
+                <PlayerCard player={player} />
+              </Grid>
+            ))
+          ) : (
+            <Grid item xs={12}>
+              <Typography variant="h6" align="center">
+                No players found! Try something else.
+              </Typography>
+            </Grid>
+          )}
+        </Grid>
+      )}
     </Container>
   );
 };
