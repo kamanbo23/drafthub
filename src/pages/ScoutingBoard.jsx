@@ -51,7 +51,6 @@ const ScoutingBoard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState(0);
-  const [viewMode, setViewMode] = useState('college'); // 'college' or 'highschool'
   const [category, setCategory] = useState('offense');
   const [searchTerm, setSearchTerm] = useState('');
   const [positionFilter, setPositionFilter] = useState('all');
@@ -92,9 +91,8 @@ const ScoutingBoard = () => {
   // Filter and sort players
   const filteredPlayers = useMemo(() => {
     let filtered = players.filter(player => {
-      // View mode filter
-      if (viewMode === 'college' && player.leagueType !== 'NCAA') return false;
-      if (viewMode === 'highschool' && player.leagueType !== 'HS') return false;
+      // Only show college players
+      if (player.leagueType !== 'NCAA') return false;
       
       // Search filter
       if (searchTerm && !player.name.toLowerCase().includes(searchTerm.toLowerCase())) return false;
@@ -118,7 +116,7 @@ const ScoutingBoard = () => {
     });
 
     return filtered;
-  }, [players, viewMode, searchTerm, positionFilter, sortBy, sortOrder]);
+  }, [players, searchTerm, positionFilter, sortBy, sortOrder]);
 
   // Get category metrics
   const getCategoryMetrics = (category) => {
@@ -300,20 +298,6 @@ const ScoutingBoard = () => {
       {/* Controls */}
       <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
         <Grid container spacing={3} alignItems="center">
-          {/* View Mode Toggle */}
-          <Grid item xs={12} md={3}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={viewMode === 'highschool'}
-                  onChange={(e) => setViewMode(e.target.checked ? 'highschool' : 'college')}
-                  color="primary"
-                />
-              }
-              label={viewMode === 'college' ? 'College Players' : 'High School Players'}
-            />
-          </Grid>
-
           {/* Category Selection */}
           <Grid item xs={12} md={2}>
             <FormControl fullWidth>
@@ -416,7 +400,7 @@ const ScoutingBoard = () => {
 
       {/* Results */}
       <Typography variant="h5" gutterBottom>
-        {viewMode === 'college' ? 'College Players' : 'High School Players'} - {category.charAt(0).toUpperCase() + category.slice(1)} Focus
+        College Players - {category.charAt(0).toUpperCase() + category.slice(1)} Focus
       </Typography>
       
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>

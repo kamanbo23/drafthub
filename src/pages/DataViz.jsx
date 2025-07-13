@@ -49,7 +49,6 @@ function DataViz() {
   const [xMetric, setXMetric] = useState('points');
   const [yMetric, setYMetric] = useState('assists');
   const [searchQuery, setSearchQuery] = useState('');
-  const [viewMode, setViewMode] = useState('college'); // 'college' or 'highschool'
   const [chartType, setChartType] = useState('scatter');
   
   const navigate = useNavigate();
@@ -86,12 +85,8 @@ function DataViz() {
   useEffect(() => {
     let filtered = allPlayers;
 
-    // View mode filter
-    if (viewMode === 'college') {
-      filtered = filtered.filter(player => player.leagueType === 'NCAA');
-    } else if (viewMode === 'highschool') {
-      filtered = filtered.filter(player => player.leagueType === 'HS');
-    }
+    // Only show college players
+    filtered = filtered.filter(player => player.leagueType === 'NCAA');
 
     // Search filter
     if (searchQuery.trim()) {
@@ -103,7 +98,7 @@ function DataViz() {
     }
 
     setFilteredPlayers(filtered);
-  }, [searchQuery, allPlayers, viewMode]);
+  }, [allPlayers, searchQuery]);
 
   // Category-based metrics
   const getMetricsByCategory = (category) => {
@@ -245,84 +240,70 @@ function DataViz() {
       {/* Controls */}
       <Paper elevation={2} sx={{ p: 3, mb: 3, borderRadius: 2 }}>
         <Grid container spacing={3} alignItems="center">
-          {/* View Mode Toggle */}
-          <Grid item xs={12} md={3}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={viewMode === 'highschool'}
-                  onChange={(e) => setViewMode(e.target.checked ? 'highschool' : 'college')}
-                  color="primary"
-                />
-              }
-              label={viewMode === 'college' ? 'College Players' : 'High School Players'}
-            />
-          </Grid>
+            {/* Category Selection */}
+            <Grid item xs={12} md={2}>
+              <FormControl fullWidth>
+                <InputLabel>Category</InputLabel>
+                <Select
+                  value={category}
+                  label="Category"
+                  onChange={handleCategoryChange}
+                >
+                  <MenuItem value="offense">Offense</MenuItem>
+                  <MenuItem value="defense">Defense</MenuItem>
+                  <MenuItem value="efficiency">Efficiency</MenuItem>
+                  <MenuItem value="physical">Physical</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
 
-          {/* Category Selection */}
-          <Grid item xs={12} md={2}>
-            <FormControl fullWidth>
-              <InputLabel>Category</InputLabel>
-              <Select
-                value={category}
-                label="Category"
-                onChange={handleCategoryChange}
-              >
-                <MenuItem value="offense">Offense</MenuItem>
-                <MenuItem value="defense">Defense</MenuItem>
-                <MenuItem value="efficiency">Efficiency</MenuItem>
-                <MenuItem value="physical">Physical</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-
-          {/* X-Axis Metric */}
-          <Grid item xs={12} md={2}>
-            <FormControl fullWidth>
-              <InputLabel>X-Axis Metric</InputLabel>
-              <Select
-                value={xMetric}
-                label="X-Axis Metric"
-                onChange={handleXMetricChange}
-              >
-                {availableMetrics.map(metric => (
-                  <MenuItem key={`x-${metric.key}`} value={metric.key}>
-                    {metric.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          
-          {/* Y-Axis Metric */}
-          <Grid item xs={12} md={2}>
-            <FormControl fullWidth>
-              <InputLabel>Y-Axis Metric</InputLabel>
-              <Select
-                value={yMetric}
-                label="Y-Axis Metric"
-                onChange={handleYMetricChange}
-              >
-                {availableMetrics.map(metric => (
-                  <MenuItem key={`y-${metric.key}`} value={metric.key}>
-                    {metric.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          
-          {/* Search */}
-          <Grid item xs={12} md={3}>
-            <TextField
-              fullWidth
-              label="Search Players"
-              variant="outlined"
-              value={searchQuery}
-              onChange={handleSearchChange}
-              placeholder="Search by name or team"
-            />
-          </Grid>
+            {/* X-Axis Metric */}
+            <Grid item xs={12} md={2}>
+              <FormControl fullWidth>
+                <InputLabel>X-Axis Metric</InputLabel>
+                <Select
+                  value={xMetric}
+                  label="X-Axis Metric"
+                  onChange={handleXMetricChange}
+                >
+                  {availableMetrics.map(metric => (
+                    <MenuItem key={`x-${metric.key}`} value={metric.key}>
+                      {metric.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            
+            {/* Y-Axis Metric */}
+            <Grid item xs={12} md={2}>
+              <FormControl fullWidth>
+                <InputLabel>Y-Axis Metric</InputLabel>
+                <Select
+                  value={yMetric}
+                  label="Y-Axis Metric"
+                  onChange={handleYMetricChange}
+                >
+                  {availableMetrics.map(metric => (
+                    <MenuItem key={`y-${metric.key}`} value={metric.key}>
+                      {metric.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            
+            {/* Search */}
+            <Grid item xs={12} md={3}>
+              <TextField
+                fullWidth
+                label="Search Players"
+                variant="outlined"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                placeholder="Search by name or team"
+              />
+            </Grid>
         </Grid>
       </Paper>
 

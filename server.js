@@ -2236,89 +2236,107 @@ const getSportSeasonId = async () => {
     const resp = await axios.get(MAXPREPS_SCORING_URL, { timeout: 15000, headers: { 'User-Agent': 'Mozilla/5.0' }});
     const $ = cheerio.load(resp.data);
     const metaContent = $('meta[name="fetch-apis"]').attr('content') || '';
-    const match = metaContent.match(/athlete-stat-leaderboard\/v1\?sportSeasonId=([^&]+)&/);
+    const match = metaContent.match(/athlete-stat-leaderboard\/v1\?sportSeasonId=([^&]+)/);
     if (match) {
       cachedSportSeasonId = match[1];
-      console.log(`📌 MaxPreps sportSeasonId detected: ${cachedSportSeasonId}`);
+      console.log(`📌 MaxPreps sportSeasonId: ${cachedSportSeasonId}`);
       return cachedSportSeasonId;
     }
-    throw new Error('sportSeasonId not found in meta');
-  } catch (err) {
-    console.error('Failed to get sportSeasonId', err.message);
-    return null;
+  } catch (error) {
+    console.error('❌ Error fetching sportSeasonId:', error.message);
   }
+  return '20ea215d-54ce-4502-8305-748bdc872d49'; // fallback
 };
 
-// Generic fetcher for a given subGroup (scoring, assists, rebounds)
+// Fetch leaders for a specific category (scoring, assists, rebounds)
 const fetchMaxPrepsCategoryLeaders = async (subGroup) => {
-  const seasonId = await getSportSeasonId();
-  if (!seasonId) return [];
-  const url = `https://production.api.maxpreps.com/gatewayweb/react/athlete-stat-leaderboard/v1?sportSeasonId=${seasonId}&subGroup=${subGroup}`;
   try {
-    const resp = await axios.get(url, { timeout: 20000, headers: { 'User-Agent': 'Mozilla/5.0' }});
-    const playersRaw = resp.data && (resp.data.players || resp.data.data?.players) || [];
-    return playersRaw.slice(0, 50).map((p) => {
-      const fullName = `${p.athleteFirstName} ${p.athleteLastName}`.trim();
-      const school = p.schoolFormattedName || p.schoolName || 'N/A';
-      const value = parseFloat(p.stats[2]) || 0; // Index 2 is per-game metric (PPG/APG/RPG)
-      const base = {
-        name: fullName,
-        school,
-        rank: p.rank,
-        leagueType: 'HS',
-        playerId: generatePlayerId(fullName + school),
-        points: 0,
-        assists: 0,
-        rebounds: 0
-      };
-      if (subGroup === 'scoring') base.points = value;
-      if (subGroup === 'assists') base.assists = value;
-      if (subGroup === 'rebounds') base.rebounds = value;
-      return base;
+    const sportSeasonId = await getSportSeasonId();
+    const url = `https://production.api.maxpreps.com/gatewayweb/react/athlete-stat-leaderboard/v1?sportSeasonId=${sportSeasonId}&subGroup=${subGroup}`;
+    
+    const response = await axios.get(url, {
+      timeout: 20000,
+      headers: { 'User-Agent': 'Mozilla/5.0' }
     });
-  } catch (err) {
-    console.error(`MaxPreps ${subGroup} leaders fetch failed:`, err.message);
+
+    // The actual structure is response.data.data.rows
+    const rows = response.data?.data?.rows || [];
+    console.log(`✅ Fetched ${rows.length} ${subGroup} leaders`);
+    
+    // Map the stat values based on category
+    // For scoring: stats[2] = PPG, for assists: stats[2] = APG, for rebounds: stats[2] = RPG
+    return rows.slice(0, 50).map(player => {
+      const fullName = `${player.athleteFirstName} ${player.athleteLastName}`.trim();
+      const statValue = parseFloat(player.stats[2]) || 0; // Index 2 is the per-game stat
+      
+      return {
+        name: fullName,
+        school: player.schoolFormattedName || player.schoolName,
+        statValue: statValue,
+        category: subGroup,
+        athleteId: player.athleteId,
+        schoolId: player.teamId,
+        careerId: player.careerId,
+        rank: player.rank,
+        position: player.position,
+        gamesPlayed: parseInt(player.stats[0]) || 0,
+        totalStat: parseInt(player.stats[1]) || 0, // Total points/assists/rebounds
+        athleteStatsUrl: player.athleteStatsUrl
+      };
+    });
+  } catch (error) {
+    console.error(`❌ Error fetching ${subGroup} leaders:`, error.message);
     return [];
   }
 };
 
-// Combine leaders from three categories into unified list & separate arrays
-app.get('/api/hs-leaders', async (req, res) => {
+// Main function to fetch all HS category leaders
+const fetchAllHSLeaders = async () => {
   try {
-    const [pointsLeaders, assistsLeaders, reboundsLeaders] = await Promise.all([
+    console.log('🏀 Fetching MaxPreps HS category leaders...');
+    
+    const [scoringLeaders, assistsLeaders, reboundsLeaders] = await Promise.all([
       fetchMaxPrepsCategoryLeaders('scoring'),
-      fetchMaxPrepsCategoryLeaders('assists'),
+      fetchMaxPrepsCategoryLeaders('assists'), 
       fetchMaxPrepsCategoryLeaders('rebounds')
     ]);
 
-    // Merge into single map keyed by name|school
-    const combinedMap = new Map();
-    const mergeArr = (arr) => {
-      arr.forEach(pl => {
-        const key = `${pl.name}|${pl.school}`;
-        const existing = combinedMap.get(key) || { ...pl };
-        combinedMap.set(key, { ...existing, 
-          points: pl.points || existing.points || 0,
-          assists: pl.assists || existing.assists || 0,
-          rebounds: pl.rebounds || existing.rebounds || 0
-        });
-      });
-    };
-    mergeArr(pointsLeaders);
-    mergeArr(assistsLeaders);
-    mergeArr(reboundsLeaders);
+    // Combine all leaders with their category
+    const allLeaders = [
+      ...scoringLeaders.map(p => ({ ...p, category: 'scoring', statName: 'PPG' })),
+      ...assistsLeaders.map(p => ({ ...p, category: 'assists', statName: 'APG' })),
+      ...reboundsLeaders.map(p => ({ ...p, category: 'rebounds', statName: 'RPG' }))
+    ];
 
+    console.log(`✅ Total HS leaders fetched: ${allLeaders.length}`);
+    return {
+      scoring: scoringLeaders,
+      assists: assistsLeaders,
+      rebounds: reboundsLeaders,
+      all: allLeaders
+    };
+  } catch (error) {
+    console.error('❌ Error in fetchAllHSLeaders:', error.message);
+    return { scoring: [], assists: [], rebounds: [], all: [] };
+  }
+};
+
+// HS Leaders endpoint
+app.get('/api/hs-leaders', async (req, res) => {
+  try {
+    const leaders = await fetchAllHSLeaders();
     res.json({
-      players: Array.from(combinedMap.values()),
-      pointsLeaders,
-      assistsLeaders,
-      reboundsLeaders,
-      source: 'MaxPreps Stat Leaders',
+      success: true,
+      data: leaders,
       timestamp: new Date().toISOString(),
-      dataType: 'LIVE_SCRAPED'
+      source: 'MaxPreps HS Category Leaders'
     });
-  } catch (err) {
-    console.error('HS leaders endpoint error', err);
-    res.status(500).json({ error: 'Failed to retrieve high school leaders' });
+  } catch (error) {
+    console.error('❌ HS Leaders endpoint error:', error.message);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Failed to fetch HS leaders',
+      timestamp: new Date().toISOString()
+    });
   }
 });
