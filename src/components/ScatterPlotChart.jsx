@@ -6,8 +6,7 @@ import {
   YAxis, 
   CartesianGrid, 
   Tooltip, 
-  ResponsiveContainer,
-  Brush
+  ResponsiveContainer
 } from 'recharts';
 import PlayerTooltip from './PlayerTooltip';
 
@@ -59,22 +58,6 @@ const ScatterPlotChart = ({ data, xKey, yKey, xLabel, yLabel }) => {
           data={data} 
           fill="#0053a0" 
           fillOpacity={0.8}
-        />
-        <Brush 
-          dataKey={xKey} 
-          height={30} 
-          stroke="#0053a0"
-          y={370}
-          onChange={(e) => {
-            if (e && e.startIndex !== undefined && e.endIndex !== undefined) {
-              // update x-axis domain based on brush selection
-              const filteredData = data.slice(e.startIndex, e.endIndex + 1);
-              if (filteredData.length > 0) {
-                const xValues = filteredData.map(d => d[xKey]);
-                setXDomain([Math.min(...xValues), Math.max(...xValues)]);
-              }
-            }
-          }}
         />
       </ScatterChart>
     </ResponsiveContainer>

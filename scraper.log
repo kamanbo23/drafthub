@@ -1,0 +1,11 @@
+🚀 Illinois Basketball Analytics Backend running on http://localhost:3002
+🚨 LIVE DATA ONLY MODE - NO BACKUP DATA CONFIGURED
+Available endpoints:
+  - /api/barttorvik - Illinois roster from live web scraping
+  - /api/kenpom-team/:team - Team analytics from KenPom
+  - /api/247sports-recruiting/:class - Recruiting data from 247Sports
+  - /api/maxpreps - High school stat leaders from MaxPreps
+  - /api/comprehensive-data - All data combined from live sources
+  - /api/illinois-roster - Illinois roster data (live only)
+  - /api/health - Health check
+⚠️  All endpoints will return 500 errors if web scraping fails - NO FALLBACK DATA

@@ -40,7 +40,7 @@ exports.handler = async (event) => {
         'X-Title': 'NBA Draft Hub'
       },
       body: JSON.stringify({
-        model: 'deepseek/deepseek-prover-v2:free',
+        model: 'qwen/qwen3-14b:free',
         messages: [
           {
             role: 'system',

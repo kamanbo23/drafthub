@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import playerData from '../intern_project_data.json';
+import IllinoisDataService from '../services/illinoisDataService';
 
 // UI stuff
 import { 
   FormControl, InputLabel, Select, MenuItem, Button, 
   FormGroup, FormControlLabel, Checkbox, 
   Typography, Box, Card, CardContent, 
-  CircularProgress, Alert  // might add Snackbar later
+  CircularProgress, Alert
 } from '@mui/material';
 
 // Todo: move this to env file 
 const API_KEY = import.meta.env.VITE_OPENROUTERKEY;
-// Remove hardcoded backup API key for security
 
 // these are the areas a player could improve in
 const FOCUS_AREAS = [
@@ -23,7 +22,7 @@ const FOCUS_AREAS = [
   { id: 'postPlay', label: 'Post Play' }  
 ];
 
-// The main projection component
+// Illinois Basketball Player Projection Component
 const PlayerProjection = () => {
   const { id } = useParams();
   const location = useLocation();
@@ -33,6 +32,7 @@ const PlayerProjection = () => {
   const [player, setPlayer] = useState(location.state?.player);
   const [allPlayers, setAllPlayers] = useState([]);
   const [selectedPlayerId, setSelectedPlayerId] = useState(id || '');
+  const [playerData, setPlayerData] = useState(null);
   
   // projection options
   const [timePeriod, setTimePeriod] = useState('3'); // 3 years is a good default
@@ -47,17 +47,37 @@ const PlayerProjection = () => {
 
   // get all players when component loads
   useEffect(() => {
-    // set all players from our dataset
-    setAllPlayers(playerData.bio || []);
+    const fetchData = async () => {
+      try {
+        const data = await IllinoisDataService.getAllIllinoisData();
+        setPlayerData(data);
+        setAllPlayers(data.bio || []);
     
     // if we got here with an ID but no player object, find the player
     if (!player && id) {
-      const foundPlayer = playerData.bio.find(p => p.playerId.toString() === id);
+          const foundPlayer = data.bio.find(p => p.playerId.toString() === id);
+          if (foundPlayer) {
+            setPlayer(foundPlayer);
+            setSelectedPlayerId(foundPlayer.playerId.toString());
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching Illinois data:', error);
+        const fallbackData = IllinoisDataService.getFallbackAllData();
+        setPlayerData(fallbackData);
+        setAllPlayers(fallbackData.bio || []);
+        
+        if (!player && id) {
+          const foundPlayer = fallbackData.bio.find(p => p.playerId.toString() === id);
       if (foundPlayer) {
         setPlayer(foundPlayer);
         setSelectedPlayerId(foundPlayer.playerId.toString());
       }
     }
+      }
+    };
+
+    fetchData();
   }, [player, id]);
   
   // handle player selection change
@@ -90,7 +110,7 @@ const PlayerProjection = () => {
     return `${feet}'${remainingInches}"`;
   };
   
-  // this is where the magic happens - calls the AI API
+  // calls the AI API
   const generateProjection = async () => {
     if (!player) {
       setErrorMsg('Please select a player first');
@@ -103,8 +123,8 @@ const PlayerProjection = () => {
     
     try {
       // grab some extra player data
-      const measurements = playerData.measurements?.find(m => m.playerId === player.playerId);
-      const rankings = playerData.scoutRankings?.find(r => r.playerId === player.playerId);
+      const measurements = playerData?.measurements?.find(m => m.playerId === player.playerId);
+      const rankings = playerData?.scoutRankings?.find(r => r.playerId === player.playerId);
       
       setLoadingMsg('Building report...');
       
@@ -133,30 +153,32 @@ const PlayerProjection = () => {
         team: player.currentTeam,
         wingspan: measurements?.wingspan ? formatHeight(measurements.wingspan) : 'N/A',
         reach: measurements?.reach ? formatHeight(measurements.reach) : 'N/A',
-        rank: consensusRank
+        rank: consensusRank,
+        isRecruit: player.isRecruit || false
       };
       
       // our prompt for the API
-      const prompt = `You are writing a professional scouting report for the Dallas Mavericks NBA team about ${playerInfo.name}.
+      const prompt = `You are writing a professional scouting report for the Illinois Fighting Illini basketball program about ${playerInfo.name}.
 
 Please create a structured report with the following sections:
 1. Executive Summary
 2. Physical Profile
 3. Projected Development (${timePeriod}-year timeline)
 4. Potential weaknesses
-4. Fit with Mavericks
-5. NBA Player Comparison
-6. Conclusion
+5. Fit with Illinois Basketball
+6. NCAA Player Comparison
+7. Conclusion
 
 Key information about the player:
 - Name: ${playerInfo.name}
 - Current Team: ${playerInfo.team}
 - Position: ${playerInfo.position || 'N/A'}
 - Height: ${playerInfo.height}
-- Weight: ${playerInfo.weight} lbs
+- Weight: ${playerInfo.weight ? `${playerInfo.weight} lbs` : 'N/A'}
 - Wingspan: ${playerInfo.wingspan}
 - Standing Reach: ${playerInfo.reach}
-- Draft Consensus Rank: ${playerInfo.rank || 'N/A'}
+- Recruiting Rank: ${playerInfo.rank || 'N/A'}
+- Type: ${playerInfo.isRecruit ? 'High School Recruit' : 'Current Player'}
 
 The report should project the player as a potential ${playerRole} with a ${timePeriod}-year development timeline.
 
@@ -165,387 +187,223 @@ Focus areas for development: ${focusAreas.length > 0 ? focusAreas.map(area => {
         return option ? option.label.toLowerCase() : area;
       }).join(', ') : 'all-around game'}.
 
-Mavericks context:
-- Head Coach: Jason Kidd
-- Core Players: Kyrie Irving, Athony Davis,P.J. Washington, Dereck Lively II
+Illinois Basketball context:
+- Head Coach: Brad Underwood
+- Conference: Big Ten
+- Recent Success: Elite 8 appearance in 2024-25 season
+- Style: Fast-paced, defensive-minded, three-point shooting
+- Key Players: Terrence Shannon Jr., Marcus Domask, Coleman Hawkins
 
 Please provide a professional, concise evaluation with clear section headings. Format the response with proper markdown for headings.`;
       
       setLoadingMsg(`Generating your report (takes ~15-20 secs)`);
       
-      // Call our Lambda function API endpoint
-      let lambdaEndpoint = import.meta.env.VITE_LAMBDA_API_ENDPOINT;
-
-      // If no environment variable is set, use the hardcoded fallback URL
-      if (!lambdaEndpoint) {
-        lambdaEndpoint = 'https://i53pa5ghxj.execute-api.us-west-1.amazonaws.com/production/generate-projection';
-      }
-      
-      try {
-        const apiResponse = await fetch(lambdaEndpoint, {
+      // Use OpenRouter API directly with a working free model
+      // Note: Lambda endpoint has an outdated model, so we'll use direct API call
+      if (API_KEY) {
+        setLoadingMsg('Generating projection with AI...');
+        
+        const openRouterResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Authorization': `Bearer ${API_KEY}`,
+            'Content-Type': 'application/json',
+            'HTTP-Referer': window.location.origin,
+            'X-Title': 'Illinois Basketball Scout'
           },
           body: JSON.stringify({
-            prompt,
-            systemMessage: 'You are a professional NBA scout who writes clear, structured scouting reports with markdown formatting. Your reports are concise, insightful, and use section headings.',
+            model: 'qwen/qwen3-14b:free',
+            messages: [
+              {
+                role: 'system',
+                content: 'You are a professional college basketball scout who writes clear, structured scouting reports with markdown formatting. Your reports are concise, insightful, and use section headings.'
+              },
+              {
+                role: 'user',
+                content: prompt
+              }
+            ],
             temperature: 0.7,
-            maxTokens: 2000
+            max_tokens: 2000
           })
         });
         
-        if (!apiResponse.ok) {
-          throw new Error(`API error: ${apiResponse.status}`);
+        if (!openRouterResponse.ok) {
+          throw new Error(`OpenRouter error: ${openRouterResponse.status}`);
         }
         
-        const data = await apiResponse.json();
-        const content = data.choices[0].message.content;
-        setProjectionText(content);
-      } catch (err) {
-        console.error('Error:', err);
-        setErrorMsg(err.message || 'Something went wrong. Please try again.');
-      } finally {
-        setLoading(false);
-        setLoadingMsg('');
+        const openRouterResult = await openRouterResponse.json();
+        setProjectionText(openRouterResult.choices[0].message.content);
+      } else {
+        throw new Error('No API key available - please add VITE_OPENROUTERKEY to your .env file');
       }
-    } catch (err) {
-      console.error('Error:', err);
-      setErrorMsg(err.message || 'Something went wrong. Please try again.');
+      
+    } catch (error) {
+      console.error('Projection generation failed:', error);
+      setErrorMsg(`Failed to generate projection: ${error.message}`);
+    } finally {
       setLoading(false);
       setLoadingMsg('');
     }
   };
   
-  // format the markdown text into react components
+  // format the markdown response
   const formatReport = (content) => {
     if (!content) return null;
     
-    // split by newlines and convert to appropriate JSX
-    const elements = [];
-    const lines = content.split('\n');
+    // Simple markdown to HTML conversion
+    const formatted = content
+      .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+      .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+      .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/\n/g, '<br />');
     
-    // loop through all lines
-    for (let i = 0; i < lines.length; i++) {
-      const paragraph = lines[i];
-      const idx = i; // keep track for React keys
-      
-      // headings - h1, h2, h3
-      if (paragraph.startsWith('# ')) {
-        elements.push(<h2 key={idx}>{paragraph.substring(2)}</h2>);
-        continue;
-      } else if (paragraph.startsWith('## ')) {
-        elements.push(<h3 key={idx}>{paragraph.substring(3)}</h3>);
-        continue;
-      } else if (paragraph.startsWith('### ')) {
-        elements.push(<h4 key={idx}>{paragraph.substring(4)}</h4>);
-        continue;
-      }
-      
-      // bullet points
-      if (paragraph.startsWith('- ') || paragraph.startsWith('* ')) {
-        elements.push(<li key={idx}>{paragraph.substring(2)}</li>);
-        continue;
-      }
-      
-      // numbered list items
-      if (/^\d+\.\s/.test(paragraph)) {
-        // This regex matches stuff like "1. Item"
-        elements.push(<li key={idx}>{paragraph.replace(/^\d+\.\s/, '')}</li>);
-        continue;
-      }
-      
-      // regular paragraphs (if not empty)
-      if (paragraph.trim().length > 0) {
-        elements.push(<p key={idx}>{paragraph}</p>);
-      } else {
-        // empty line
-        elements.push(<br key={idx} />);
-      }
-    }
-    
-    return elements;
+    return <div dangerouslySetInnerHTML={{ __html: formatted }} />;
   };
   
   return (
-    <Box sx={{ 
-      maxWidth: '1200px', 
-      margin: '0 auto', 
-      padding: '20px',
-      backgroundColor: '#f5f7fa'
-    }}>
-      <Button 
-        variant="contained" 
-        color="primary" 
-        onClick={() => navigate('/big-board')}
-        sx={{ mb: 2 }}
-      >
-        ← Back to Big Board
-      </Button>
-      
-      <Typography
-        variant="h3"
-        component="h1"
-        align="center"
-        color="primary"
-        sx={{
-          mb: 4,
-          fontWeight: 'bold',
-          textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)',
-        }}
-      >
-        Player Future Projection
+    <Box sx={{ p: 3, maxWidth: 1200, mx: 'auto' }}>
+      <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 3, textAlign: 'center' }}>
+        Illinois Basketball Player Projection
       </Typography>
       
-      <Box sx={{ 
-        display: 'grid', 
-        gridTemplateColumns: { xs: '1fr', md: '350px 1fr' }, 
-        gap: '20px' 
-      }}>
-        <Box sx={{ 
-          backgroundColor: '#ffffff', 
-          padding: '20px', 
-          borderRadius: '12px', 
-          boxShadow: '0 2px 10px rgba(0, 0, 0, 0.08)',
-          height: 'fit-content'
-        }}>
-          <Typography 
-            variant="h6" 
-            sx={{ 
-              mb: 2, 
-              pb: 1, 
-              borderBottom: '1px solid #e0e0e0',
-              fontWeight: 600
-            }}
-          >
-            Settings
+      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', lg: 'row' }, gap: 3 }}>
+        {/* Left side - Controls */}
+        <Card sx={{ flex: { lg: '0 0 400px' }, p: 3 }}>
+          <Typography variant="h6" gutterBottom>
+            Projection Settings
           </Typography>
 
-          <FormControl fullWidth sx={{ mb: 3 }}>
-            <InputLabel id="player-select-label">Select Player</InputLabel>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {/* Player Selection */}
+            <FormControl fullWidth>
+              <InputLabel>Select Player</InputLabel>
             <Select
-              labelId="player-select-label"
-              id="player-select"
               value={selectedPlayerId}
+                label="Select Player"
               onChange={handlePlayerChange}
-              label="Select Player"
             >
-              <MenuItem value="">-- Choose a player --</MenuItem>
-              {allPlayers.map(p => (
+                <MenuItem value="">
+                  <em>Choose a player...</em>
+                </MenuItem>
+                {allPlayers.map((p) => (
                 <MenuItem key={p.playerId} value={p.playerId.toString()}>
-                  {p.name} - {p.currentTeam || 'N/A'}
+                    {p.name} ({p.currentTeam})
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
           
-          {player && (
-            <>
-              <Card 
-                sx={{ 
-                  mb: 3, 
-                  borderRadius: '8px',
-                }}
-              >
-                <CardContent sx={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
-                  alignItems: 'center',
-                  p: 2
-                }}>
-                  <Box>
-                    <Typography variant="h6" component="div" sx={{ fontWeight: 600 }}>
-                      {player.name}
-                    </Typography>
-                    <Typography color="text.secondary" sx={{ fontSize: '0.9rem' }}>
-                      {player.currentTeam || 'N/A'} {player.position ? `| ${player.position}` : ''}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                      {player.height ? `${formatHeight(player.height)}` : ''} 
-                      {player.weight ? ` • ${player.weight} lbs` : ''}
-                    </Typography>
-                  </Box>
-                  <Box sx={{ 
-                    width: 70, 
-                    height: 70, 
-                    borderRadius: '50%', 
-                    overflow: 'hidden',
-                    border: '1px solid #e0e0e0'
-                  }}>
-                    <img 
-                      src={player.photoUrl || '/placeholder-user.svg'} 
-                      alt={`${player.name}`}
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = '/placeholder-user.svg';
-                      }}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    />
-                  </Box>
-                </CardContent>
-              </Card>
-              
-              <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>Options:</Typography>
-              
-              <FormControl fullWidth sx={{ mb: 2 }}>
-                <InputLabel id="timeline-label">Timeline</InputLabel>
+            {/* Time Period */}
+            <FormControl fullWidth>
+              <InputLabel>Development Timeline</InputLabel>
                 <Select
-                  labelId="timeline-label"
-                  id="timeline"
                   value={timePeriod}
+                label="Development Timeline"
                   onChange={(e) => setTimePeriod(e.target.value)}
-                  label="Timeline"
                 >
                   <MenuItem value="1">1 Year</MenuItem>
+                <MenuItem value="2">2 Years</MenuItem>
                   <MenuItem value="3">3 Years</MenuItem>
-                  <MenuItem value="5">5 Years</MenuItem>
+                <MenuItem value="4">4 Years</MenuItem>
                 </Select>
               </FormControl>
               
-              <FormControl fullWidth sx={{ mb: 3 }}>
-                <InputLabel id="role-label">Projected Role</InputLabel>
+            {/* Player Role */}
+            <FormControl fullWidth>
+              <InputLabel>Projected Role</InputLabel>
                 <Select
-                  labelId="role-label"
-                  id="role"
                   value={playerRole}
+                label="Projected Role"
                   onChange={(e) => setPlayerRole(e.target.value)}
-                  label="Projected Role"
                 >
+                <MenuItem value="bench">Bench Player</MenuItem>
+                <MenuItem value="rotation">Rotation Player</MenuItem>
                   <MenuItem value="starter">Starter</MenuItem>
-                  <MenuItem value="rotation">Rotation Player</MenuItem>
-                  <MenuItem value="bench">Bench Player</MenuItem>
-                  <MenuItem value="specialist">Specialist</MenuItem>
+                <MenuItem value="star">Star Player</MenuItem>
                 </Select>
               </FormControl>
               
-              <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 600 }}>Development Focus:</Typography>
-              <FormGroup sx={{ mb: 3 }}>
-                {FOCUS_AREAS.map(area => (
+            {/* Focus Areas */}
+            <Box>
+              <Typography variant="subtitle2" gutterBottom>
+                Development Focus Areas
+              </Typography>
+              <FormGroup>
+                {FOCUS_AREAS.map((area) => (
                   <FormControlLabel
                     key={area.id}
                     control={
                       <Checkbox 
                         checked={focusAreas.includes(area.id)} 
                         onChange={() => toggleFocusArea(area.id)}
-                        name={area.id}
                       />
                     }
                     label={area.label}
                   />
                 ))}
               </FormGroup>
+            </Box>
               
+            {/* Generate Button */}
               <Button
                 variant="contained"
-                color="primary"
                 onClick={generateProjection}
-                disabled={loading}
-                fullWidth
-                sx={{ 
-                  py: 1.5, 
-                  fontWeight: 600
-                }}
-              >
-                {loading ? (
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <CircularProgress size={24} sx={{ mr: 1, color: 'white' }} />
-                    <span>{loadingMsg || 'Loading...'}</span>
+              disabled={loading || !player}
+              sx={{ mt: 2 }}
+            >
+              {loading ? 'Generating...' : 'Generate Projection'}
+            </Button>
+            
+            {loading && (
+              <Box sx={{ textAlign: 'center', mt: 2 }}>
+                <CircularProgress size={24} />
+                <Typography variant="body2" sx={{ mt: 1 }}>
+                  {loadingMsg}
+                </Typography>
                   </Box>
-                ) : 'Generate Projection'}
-              </Button>
-            </>
           )}
           
           {errorMsg && (
-            <Alert severity="error" sx={{ mt: 3 }}>{errorMsg}</Alert>
+              <Alert severity="error" sx={{ mt: 2 }}>
+                {errorMsg}
+              </Alert>
           )}
         </Box>
+        </Card>
+        
+        {/* Right side - Results */}
+        <Card sx={{ flex: 1, p: 3 }}>
+          <Typography variant="h6" gutterBottom>
+            Projection Report
+          </Typography>
         
         {projectionText ? (
           <Box sx={{ 
-            bgcolor: 'white', 
-            p: '25px', 
-            borderRadius: '12px', 
-            boxShadow: '0 2px 10px rgba(0, 0, 0, 0.08)',
-            maxHeight: { md: '85vh' },
-            overflow: { md: 'auto' }
-          }}>
-            <Typography 
-              variant="h5" 
-              color="primary" 
-              sx={{ 
-                borderBottom: '1px solid #e0e0e0', 
-                pb: 1, 
-                mb: 3,
-                fontWeight: 600
-              }}
-            >
-              Scouting Report: {player?.name}
-            </Typography>
-            <Box className="report-content" sx={{ 
-              '& h2': {
-                color: '#333',
-                fontSize: '1.5rem',
-                mt: 3,
-                mb: 2,
-                fontWeight: 700,
-              },
-              '& h3': {
-                color: '#2565c0', // hardcoded color instead of theme
-                fontSize: '1.25rem',
+              maxHeight: '600px', 
+              overflowY: 'auto',
+              '& h1, & h2, & h3': { 
+                color: 'primary.main',
                 mt: 2,
-                mb: 1,
-                fontWeight: 600
+                mb: 1
               },
-              '& h4': {
-                fontSize: '1.1rem',
-                mt: 2,
-                mb: 1,
-                fontWeight: 600
+              '& strong': {
+                fontWeight: 'bold'
               },
-              '& p': {
-                lineHeight: 1.6,
-                mb: 1.5 // inconsistent with h3/h4
-              },
-              '& li': {
-                mb: 0.75, // inconsistent with other spacing
-                ml: 2
+              '& em': {
+                fontStyle: 'italic'
               }
             }}>
               {formatReport(projectionText)}
-            </Box>
           </Box>
         ) : (
-          <Box sx={{ 
-            background: '#fff', // different syntax than above
-            padding: '30px', 
-            borderRadius: '10px', // inconsistent with other panels
-            boxShadow: '0 2px 10px rgba(0, 0, 0, 0.08)',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            minHeight: '300px',
-            textAlign: 'center'
-          }}>
-            <img 
-              src="/placeholder-user.svg" 
-              alt="Select player" 
-              style={{ 
-                width: '100px', 
-                height: '100px',
-                opacity: 0.4,
-                marginBottom: '20px'
-              }} 
-            />
-            <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
-              Select a player and create a projection
+            <Typography variant="body2" color="text.secondary">
+              Select a player and generate a projection to see the report here.
             </Typography>
-            <Typography color="text.secondary">
-              This tool will analyze the player and generate a detailed scouting report.
-            </Typography>
-          </Box>
         )}
+        </Card>
       </Box>
     </Box>
   );

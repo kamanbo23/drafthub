@@ -1,4 +1,4 @@
-/* Player card styling*/
+/* Illinois Basketball Player card styling*/
 .player-card {
   background: white;
   border-radius: 8px;
@@ -9,6 +9,7 @@
   transition: transform 0.2s ease;
   height: auto;
   min-height: 500px; /* keep cards consistent height */
+  cursor: pointer;
 }
 
 .player-card:hover {
@@ -23,12 +24,43 @@
   overflow: hidden;
   border-radius: 4px;
   margin-bottom: 15px;
+  position: relative;
 }
 
 .player-image img {
   max-width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* Recruit badge */
+.recruit-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #e84a27; /* Illinois orange */
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Category badge */
+.category-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #13294b; /* Illinois blue */
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .player-info h3 {
@@ -51,9 +83,57 @@
   color: #444;
 }
 
+/* Primary stat display */
+.primary-stat {
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  padding: 8px;
+  margin: 8px 0;
+  border-left: 3px solid #e84a27;
+}
+
+.primary-stat p {
+  margin: 0;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Stats grid for high school players */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  margin: 12px 0;
+  padding: 8px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 10px;
+  font-weight: bold;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-top: 2px;
+}
+
 /* TODO: make button bigger on mobile? */
 .player-details button {
-  background-color: #0053a0; /* mavs blue */
+  background-color: #e84a27; /* Illinois orange */
   color: white;
   border: none;
   padding: 8px 16px;
@@ -66,7 +146,7 @@
 }
 
 .player-details button:hover {
-  background-color: #00285e; /* darker blue */
+  background-color: #c73e1f; /* darker orange */
 } 
 
 .card-scouting-reports {
@@ -77,7 +157,7 @@
 
 .card-scouting-reports h4 {
   margin: 0 0 8px 0;
-  color: #0053a0;
+  color: #e84a27; /* Illinois orange */
   font-size: 15px;
 }
 

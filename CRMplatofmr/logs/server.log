@@ -1,0 +1,24 @@
+node:internal/modules/cjs/loader:1252
+  throw err;
+  ^
+
+Error: Cannot find module './index.ts'
+Require stack:
+- /Users/lokesh/drafthub/CRMplatofmr/src/imaginaryUncacheableRequireResolveScript
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1249:15)
+    at Function.resolve (node:internal/modules/helpers:148:19)
+    at requireResolveNonCached (/Users/lokesh/drafthub/node_modules/ts-node/dist/bin.js:549:16)
+    at getProjectSearchDir (/Users/lokesh/drafthub/node_modules/ts-node/dist/bin.js:519:40)
+    at phase3 (/Users/lokesh/drafthub/node_modules/ts-node/dist/bin.js:267:27)
+    at bootstrap (/Users/lokesh/drafthub/node_modules/ts-node/dist/bin.js:47:30)
+    at main (/Users/lokesh/drafthub/node_modules/ts-node/dist/bin.js:33:12)
+    at Object.<anonymous> (/Users/lokesh/drafthub/node_modules/ts-node/dist/bin.js:579:5)
+    at Module._compile (node:internal/modules/cjs/loader:1565:14)
+    at Object..js (node:internal/modules/cjs/loader:1708:10) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/Users/lokesh/drafthub/CRMplatofmr/src/imaginaryUncacheableRequireResolveScript'
+  ]
+}
+
+Node.js v22.12.0

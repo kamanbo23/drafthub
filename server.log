@@ -1,0 +1,8 @@
+Illinois Basketball Analytics Backend running on http://localhost:3002
+Available endpoints:
+  - /api/barttorvik - Illinois roster from BartTorvik
+  - /api/kenpom-team/:team - Team analytics from KenPom
+  - /api/247sports-recruiting/:class - Recruiting data from 247Sports
+  - /api/maxpreps - High school stat leaders from MaxPreps
+  - /api/comprehensive-data - All data combined
+  - /api/illinois-roster - Illinois roster data
