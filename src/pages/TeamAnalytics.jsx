@@ -60,58 +60,68 @@ const TeamAnalytics = () => {
   const [timeRange, setTimeRange] = useState('season');
   const [comparisonTeam, setComparisonTeam] = useState('');
 
+  // Hard-coded Illinois basketball data
+  const illinoisData = {
+    stats: {
+      kenpomRank: 17,
+      adjustedOffense: 121.9,
+      adjustedDefense: 97.6,
+      tempo: 71.5,
+      adjustedEfficiency: 24.32,
+      conferenceRank: 1,
+      record: "22-13",
+      conferenceRecord: "11-2",
+      conference: "Big Ten",
+      luck: -0.022,
+      strengthOfSchedule: 17.14,
+      effectiveFieldGoalPct: 0.523,
+      turnoverPct: 0.164,
+      offensiveReboundPct: 0.303,
+      oppTurnoverPct: 0.126,
+      freeThrowRate: 0.343,
+      // Last 5 games trends (estimated based on season averages)
+      last5Games: {
+        adjustedOffense: 119.4,
+        adjustedDefense: 96.1,
+        tempo: 72.2
+      }
+    },
+    roster: [
+      { playerId: 1, name: "Kasparas Jakucionis", position: "G", points: 15.0, rebounds: 5.7, assists: 4.7, fieldGoalPct: 0.45 },
+      { playerId: 2, name: "Will Riley", position: "F", points: 12.6, rebounds: 4.1, assists: 2.2, fieldGoalPct: 0.42 },
+      { playerId: 3, name: "Kylan Boswell", position: "G", points: 12.3, rebounds: 4.8, assists: 3.4, fieldGoalPct: 0.44 },
+      { playerId: 4, name: "Tomislav Ivisic", position: "C", points: 13.0, rebounds: 7.7, assists: 2.3, fieldGoalPct: 0.51 },
+      { playerId: 5, name: "Tre White", position: "G", points: 10.5, rebounds: 5.5, assists: 0.8, fieldGoalPct: 0.38 },
+      { playerId: 6, name: "Ben Humrichous", position: "F", points: 7.6, rebounds: 3.8, assists: 0.9, fieldGoalPct: 0.46 },
+      { playerId: 7, name: "Morez Johnson", position: "F", points: 7.0, rebounds: 6.7, assists: 0.3, fieldGoalPct: 0.48 },
+      { playerId: 8, name: "Dra Gibbs-Lawhorn", position: "G", points: 5.9, rebounds: 1.6, assists: 0.5, fieldGoalPct: 0.41 }
+    ]
+  };
+
   // Fetch team data
   useEffect(() => {
-    const fetchData = async () => {
+    const loadData = () => {
       try {
         setLoading(true);
         
-        // Try to fetch real data, fallback to mock data
-        let teamStats, rosterData;
-        try {
-          [teamStats, rosterData] = await Promise.all([
-            fetch('http://localhost:3002/api/kenpom-team/Illinois').then(r => r.json()),
-            fetch('http://localhost:3002/api/illinois-roster').then(r => r.json())
-          ]);
-        } catch (apiError) {
-          console.warn('API fetch failed, using mock data:', apiError);
-          // Mock data for demonstration
-          teamStats = {
-            kenpomRank: 25,
-            adjustedOffense: 114.2,
-            adjustedDefense: 98.7,
-            tempo: 72.3,
-            adjustedEfficiency: 15.5,
-            conferenceRank: 6,
-            offensiveReboundPct: 32.1,
-            oppTurnoverPct: 18.4,
-            freeThrowRate: 0.34
-          };
-          rosterData = {
-            players: [
-              { name: 'Terrence Shannon Jr.', position: 'G', points: 18.2 },
-              { name: 'Marcus Domask', position: 'F', points: 15.8 },
-              { name: 'Quincy Guerrier', position: 'F', points: 12.4 }
-            ]
-          };
-        }
-         
+        // Use hard-coded Illinois data
         setTeamData({
-          stats: teamStats,
-          roster: rosterData.players || rosterData,
-          trends: generateTrendData(teamStats),
-          comparisons: generateComparisonData(teamStats)
+          stats: illinoisData.stats,
+          roster: illinoisData.roster,
+          trends: generateTrendData(illinoisData.stats),
+          comparisons: generateComparisonData(illinoisData.stats)
         });
         setError(null);
       } catch (err) {
-        console.error('Error fetching team data:', err);
+        console.error('Error loading team data:', err);
         setError('Failed to load team analytics data');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
+    // Simulate brief loading
+    setTimeout(loadData, 500);
   }, []);
 
   // Generate trend data for charts
@@ -120,10 +130,10 @@ const TeamAnalytics = () => {
     for (let i = 1; i <= 15; i++) {
       games.push({
         game: i,
-        offensiveRating: stats.adjustedOffense + (Math.random() - 0.5) * 10,
-        defensiveRating: stats.adjustedDefense + (Math.random() - 0.5) * 8,
-        tempo: stats.tempo + (Math.random() - 0.5) * 6,
-        efficiency: stats.adjustedEfficiency + (Math.random() - 0.5) * 5
+        offensiveRating: stats.adjustedOffense + (Math.random() - 0.5) * 8,
+        defensiveRating: stats.adjustedDefense + (Math.random() - 0.5) * 6,
+        tempo: stats.tempo + (Math.random() - 0.5) * 4,
+        efficiency: stats.adjustedEfficiency + (Math.random() - 0.5) * 3
       });
     }
     return games;
@@ -133,13 +143,11 @@ const TeamAnalytics = () => {
   const generateComparisonData = (stats) => {
     const bigTenTeams = [
       { name: 'Illinois', offensive: stats.adjustedOffense, defensive: stats.adjustedDefense },
-      { name: 'Purdue', offensive: 118.5, defensive: 95.2 },
-      { name: 'Michigan St', offensive: 112.3, defensive: 98.7 },
-      { name: 'Indiana', offensive: 114.8, defensive: 101.2 },
-      { name: 'Wisconsin', offensive: 109.6, defensive: 94.8 },
-      { name: 'Iowa', offensive: 116.2, defensive: 103.5 },
-      { name: 'Ohio State', offensive: 113.7, defensive: 99.3 },
-      { name: 'Michigan', offensive: 111.4, defensive: 97.6 }
+      { name: 'Michigan State', offensive: 118.8, defensive: 90.4 },
+      { name: 'Wisconsin', offensive: 122.9, defensive: 96.3 },
+      { name: 'Purdue', offensive: 124.6, defensive: 99.3 },
+      { name: 'Michigan', offensive: 116.5, defensive: 93.1 },
+      { name: 'Maryland', offensive: 118.9, defensive: 101.4 }
     ];
     return bigTenTeams;
   };
@@ -218,7 +226,7 @@ const TeamAnalytics = () => {
       { metric: 'Defensive Rating', value: 130 - stats.adjustedDefense, max: 130 }, // Inverted for radar
       { metric: 'Tempo', value: stats.tempo, max: 80 },
       { metric: 'Rebounding', value: stats.offensiveReboundPct * 100, max: 40 },
-      { metric: 'Turnover Rate', value: stats.oppTurnoverPct, max: 25 },
+      { metric: 'Opp Turnover Rate', value: stats.oppTurnoverPct * 100, max: 25 },
       { metric: 'Free Throw Rate', value: stats.freeThrowRate * 100, max: 50 }
     ];
   };
@@ -410,27 +418,32 @@ const TeamAnalytics = () => {
                       <TableRow>
                         <TableCell>Effective FG%</TableCell>
                         <TableCell align="right">{teamData.stats.effectiveFieldGoalPct ? (teamData.stats.effectiveFieldGoalPct * 100).toFixed(1) + '%' : 'N/A'}</TableCell>
-                        <TableCell align="right">25th</TableCell>
+                        <TableCell align="right">Good</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell>Turnover Rate</TableCell>
-                        <TableCell align="right">{teamData.stats.turnoverPct ? teamData.stats.turnoverPct.toFixed(1) + '%' : 'N/A'}</TableCell>
-                        <TableCell align="right">42nd</TableCell>
+                        <TableCell align="right">{teamData.stats.turnoverPct ? (teamData.stats.turnoverPct * 100).toFixed(1) + '%' : 'N/A'}</TableCell>
+                        <TableCell align="right">Excellent</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Opponent Turnover %</TableCell>
+                        <TableCell align="right">{teamData.stats.oppTurnoverPct ? (teamData.stats.oppTurnoverPct * 100).toFixed(1) + '%' : 'N/A'}</TableCell>
+                        <TableCell align="right">Avg</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell>Offensive Rebound %</TableCell>
                         <TableCell align="right">{teamData.stats.offensiveReboundPct ? (teamData.stats.offensiveReboundPct * 100).toFixed(1) + '%' : 'N/A'}</TableCell>
-                        <TableCell align="right">18th</TableCell>
+                        <TableCell align="right">Good</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell>Free Throw Rate</TableCell>
                         <TableCell align="right">{teamData.stats.freeThrowRate ? (teamData.stats.freeThrowRate * 100).toFixed(1) + '%' : 'N/A'}</TableCell>
-                        <TableCell align="right">67th</TableCell>
+                        <TableCell align="right">Good</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell>Strength of Schedule</TableCell>
-                        <TableCell align="right">{teamData.stats.strengthOfSchedule ? teamData.stats.strengthOfSchedule.toFixed(4) : 'N/A'}</TableCell>
-                        <TableCell align="right">12th</TableCell>
+                        <TableCell align="right">{teamData.stats.strengthOfSchedule ? '+' + teamData.stats.strengthOfSchedule.toFixed(2) : 'N/A'}</TableCell>
+                        <TableCell align="right">Very Strong</TableCell>
                       </TableRow>
                     </TableBody>
                   </Table>

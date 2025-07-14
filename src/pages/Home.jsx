@@ -114,7 +114,7 @@ function Home() {
             <Grow in={animate} timeout={1200}>
               <Card sx={{ 
                 height: '100%', 
-                display: 'flex', 
+          display: 'flex', 
                 flexDirection: 'column',
                 borderRadius: 2,
                 transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
@@ -244,7 +244,7 @@ function Home() {
                   </Button>
                 </CardActions>
               </Card>
-            </Grow>
+          </Grow>
           </Grid>
 
           {/* Team Analytics */}
@@ -336,9 +336,9 @@ function Home() {
                   </Button>
                 </CardActions>
               </Card>
-            </Grow>
+          </Grow>
           </Grid>
-
+          
           {/* Player Projections */}
           <Grid item xs={12} md={6} lg={4}>
             <Grow in={animate} timeout={2200}>
@@ -358,7 +358,7 @@ function Home() {
                     <PsychologyIcon sx={{ fontSize: 40, color: '#9b59b6', mr: 2 }} />
                     <Typography variant="h6" component="h3" sx={{ fontWeight: 600 }}>
                       Player Projections
-                    </Typography>
+                  </Typography>
                   </Box>
                   <Typography variant="body2">
                     AI-powered scouting reports and player development projections. Generate detailed 
@@ -382,10 +382,10 @@ function Home() {
                   </Button>
                 </CardActions>
               </Card>
-            </Grow>
+          </Grow>
           </Grid>
         </Grid>
-      </Box>
+        </Box>
 
       {/* Data Sources */}
       <Box sx={{ mb: 4 }}>

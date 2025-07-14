@@ -90,11 +90,11 @@ function DataViz() {
 
     // Search filter
     if (searchQuery.trim()) {
-      const searchLower = searchQuery.toLowerCase();
+    const searchLower = searchQuery.toLowerCase();
       filtered = filtered.filter(player => 
         player.name.toLowerCase().includes(searchLower) ||
         (player.currentTeam && player.currentTeam.toLowerCase().includes(searchLower))
-      );
+    );
     }
 
     setFilteredPlayers(filtered);
@@ -167,7 +167,7 @@ function DataViz() {
   const getMetricLabel = (key) => {
     const metric = availableMetrics.find(m => m.key === key);
     return metric ? metric.label : key;
-  };
+  }; 
 
   // Generate bar chart data for category comparison
   const getBarChartData = () => {
@@ -261,52 +261,52 @@ function DataViz() {
             <Grid item xs={12} md={2}>
               <FormControl fullWidth>
                 <InputLabel>X-Axis Metric</InputLabel>
-                <Select
-                  value={xMetric}
-                  label="X-Axis Metric"
-                  onChange={handleXMetricChange}
-                >
+            <Select
+              value={xMetric}
+              label="X-Axis Metric"
+              onChange={handleXMetricChange}
+            >
                   {availableMetrics.map(metric => (
-                    <MenuItem key={`x-${metric.key}`} value={metric.key}>
-                      {metric.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+                <MenuItem key={`x-${metric.key}`} value={metric.key}>
+                  {metric.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
             </Grid>
             
             {/* Y-Axis Metric */}
             <Grid item xs={12} md={2}>
               <FormControl fullWidth>
                 <InputLabel>Y-Axis Metric</InputLabel>
-                <Select
-                  value={yMetric}
-                  label="Y-Axis Metric"
-                  onChange={handleYMetricChange}
-                >
+            <Select
+              value={yMetric}
+              label="Y-Axis Metric"
+              onChange={handleYMetricChange}
+            >
                   {availableMetrics.map(metric => (
-                    <MenuItem key={`y-${metric.key}`} value={metric.key}>
-                      {metric.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+                <MenuItem key={`y-${metric.key}`} value={metric.key}>
+                  {metric.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
             </Grid>
-            
+          
             {/* Search */}
             <Grid item xs={12} md={3}>
-              <TextField
+          <TextField
                 fullWidth
                 label="Search Players"
-                variant="outlined"
-                value={searchQuery}
-                onChange={handleSearchChange}
+            variant="outlined"
+            value={searchQuery}
+            onChange={handleSearchChange}
                 placeholder="Search by name or team"
-              />
+          />
             </Grid>
         </Grid>
       </Paper>
-
+      
       {/* Visualization Tabs */}
       <Paper elevation={2} sx={{ borderRadius: 2 }}>
         <Tabs
@@ -324,17 +324,17 @@ function DataViz() {
         <TabPanel value={activeTab} index={0}>
           <Box sx={{ p: 3 }}>
             <Typography variant="h6" sx={{ mb: 3 }}>
-              {getMetricLabel(xMetric)} vs {getMetricLabel(yMetric)}
-            </Typography>
+          {getMetricLabel(xMetric)} vs {getMetricLabel(yMetric)}
+        </Typography>
             <Box sx={{ height: 500 }}>
-              <ScatterPlotChart
-                data={filteredPlayers}
-                xKey={xMetric}
-                yKey={yMetric}
-                xLabel={getMetricLabel(xMetric)}
-                yLabel={getMetricLabel(yMetric)}
-              />
-            </Box>
+          <ScatterPlotChart
+            data={filteredPlayers}
+            xKey={xMetric}
+            yKey={yMetric}
+            xLabel={getMetricLabel(xMetric)}
+            yLabel={getMetricLabel(yMetric)}
+          />
+        </Box>
             <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
               Showing {filteredPlayers.length} players • Click and drag to zoom • Hover for details
             </Typography>

@@ -330,7 +330,7 @@ const BigBoard = () => {
       blocks: 'Block Leaders (1.5+ BPG)'
     };
     return names[category] || category;
-  };
+  };  
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
